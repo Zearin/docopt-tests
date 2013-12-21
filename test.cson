@@ -2,6 +2,7 @@
 #   Language-agnostic tests for docopt
 ###
 
+
 "Usage: prog": [
   {
     "input": "prog"
