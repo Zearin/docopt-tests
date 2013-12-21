@@ -6,12 +6,12 @@
   {
     "input": "prog"
     "expected": {}
-  },
+  }
   {
     "input": "prog --xxx"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -22,17 +22,19 @@ Options: -a  All.
 """: [
   {
     "input": "prog"
-    "expected": {"-a": false}
-  },
+    "expected": 
+      "-a": false
+  }
   {
     "input": "prog -a"
-    "expected": {"-a": true}
-  },
+    "expected": 
+      "-a": true
+  }
   {
     "input": "prog -x"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -43,17 +45,19 @@ Usage: prog [options]
 """: [
   {
     "input": "prog"
-    "expected": {"--all": false}
-  },
+    "expected": 
+      "--all": false
+  }
   {
     "input": "prog --all"
-    "expected": {"--all": true}
-  },
+    "expected": 
+      "--all": true
+  }
   {
     "input": "prog --xxx"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -64,17 +68,20 @@ Options: -v, --verbose  Verbose.
 """: [
   {
     "input": "prog --verbose"
-    "expected": {"--verbose": true}
-  },
+    "expected": 
+      "--verbose": true
+  }
   {
     "input": "prog --ver"
-    "expected": {"--verbose": true}
-  },
+    "expected": 
+      "--verbose": true
+  }
   {
     "input": "prog -v"
-    "expected": {"--verbose": true}
+    "expected": 
+      "--verbose": true
   }
-],
+]
 
 
 """
@@ -85,17 +92,19 @@ Usage: prog [options]
 """: [
   {
     "input": "prog -p home/"
-    "expected": {"-p": "home/"}
-  },
+    "expected": 
+      "-p": "home/"
+  }
   {
     "input": "prog -phome/"
-    "expected": {"-p": "home/"}
-  },
+    "expected": 
+      "-p": "home/"
+  }
   {
     "input": "prog -p"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -106,25 +115,29 @@ Options: --path <path>
 """: [
   {
     "input": "prog --path home/"
-    "expected": {"--path": "home/"}
-  },
+    "expected": 
+      "--path": "home/"
+  }
   {
     "input": "prog --path=home/"
-    "expected": {"--path": "home/"}
-  },
+    "expected": 
+      "--path": "home/"
+  }
   {
     "input": "prog --pa home/"
-    "expected": {"--path": "home/"}
-  },
+    "expected": 
+      "--path": "home/"
+  }
   {
     "input": "prog --pa=home/"
-    "expected": {"--path": "home/"}
-  },
+    "expected": 
+      "--path": "home/"
+  }
   {
     "input": "prog --path"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -135,9 +148,10 @@ Options: -p PATH, --path=<path>  Path to files.
 """: [
   {
     "input": "prog -proot"
-    "expected": {"--path": "root"}
+    "expected": 
+      "--path": "root"
   }
-],
+]
 
 
 """
@@ -148,13 +162,15 @@ Options:    -p --path PATH  Path to files.
 """: [
   {
     "input": "prog -p root"
-    "expected": {"--path": "root"}
-  },
+    "expected": 
+      "--path": "root"
+  }
   {
     "input": "prog --path root"
-    "expected": {"--path": "root"}
+    "expected": 
+      "--path": "root"
   }
-],
+]
 
 
 """
@@ -166,13 +182,15 @@ Options:
 """: [
   {
     "input": "prog"
-    "expected": {"-p": "./"}
-  },
+    "expected": 
+      "-p": "./"
+  }
   {
     "input": "prog -phome"
-    "expected": {"-p": "home"}
+    "expected": 
+      "-p": "home"
   }
-],
+]
 
 
 """
@@ -184,13 +202,15 @@ OpTiOnS: --path=<files>  Path to files
 """: [
   {
     "input": "prog"
-    "expected": {"--path": "/root"}
-  },
+    "expected": 
+      "--path": "/root"
+  }
   {
     "input": "prog --path=home"
-    "expected": {"--path": "home"}
+    "expected": 
+      "--path": "home"
   }
-],
+]
 
 
 """
@@ -208,14 +228,14 @@ options:
       "-a": true
       "-r": true
       "-m": "Hello" 
-  },
+  }
   {
     "input": "prog -armyourass"
     "expected":
       "-a": true
       "-r": true 
       "-m": "yourass"
-  },
+  }
   {
     "input": "prog -a -r"
     "expected":
@@ -223,7 +243,7 @@ options:
       "-r": true
       "-m": null 
   }
-],
+]
 
 
 """
@@ -238,25 +258,24 @@ Options: --version
     "expected":
       "--version": true
       "--verbose": false 
-  },
+  }
   {
     "input": "prog --verbose"
-    "expected": { 
+    "expected": 
       "--version": false
       "--verbose": true 
-    }
-  },
+  }
   {
     "input": "prog --ver"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog --verb"
     "expected":
       "--version": false
       "--verbose": true 
   }
-],
+]
 
 
 """
@@ -275,7 +294,7 @@ options:
       "-r": true
       "-m": "yourass" 
   }
-],
+]
 
 
 """
@@ -293,7 +312,7 @@ options: -a        Add
       "-r": true
       "-m": "Hello" 
   }
-],
+]
 
 
 """
@@ -309,22 +328,22 @@ options:
     "expected": 
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -b -a"
     "expected": 
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -a"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -339,22 +358,22 @@ options: -a
     "expected": 
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -b -a"
     "expected": 
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -a"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -369,29 +388,29 @@ options: -a
     "expected": 
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -b -a"
     "expected": 
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -a"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog -b"
     "expected":  
       "-a": false
       "-b": true 
     
-  },
+  }
   {
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -406,28 +425,28 @@ options: -a
     "expected":
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -b -a"
     "expected":
       "-a": true
       "-b": true 
-  },
+  }
   {
     "input": "prog -a"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog -b"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected":
       "-a": false
       "-b": false 
   }
-],
+]
 
 
 """
@@ -440,24 +459,24 @@ options: -a
   {
     "input": "prog -a -b"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog -a"
     "expected":
       "-a": true
       "-b": false
-  },
+  }
   {
     "input": "prog -b"
     "expected":
       "-a": false
       "-b": true
   }
-],
+]
 
 
 """
@@ -470,59 +489,63 @@ options: -a
   {
     "input": "prog -a -b"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected":
       "-a": false
       "-b": false 
-  },
+  }
   {
     "input": "prog -a"
     "expected":
       "-a": true
       "-b": false 
-  },
+  }
   {
     "input": "prog -b"
     "expected":
       "-a": false
       "-b": true 
   }
-],
+]
 
 
 "usage: prog <arg>": [
   {
     "input": "prog 10"
-    "expected": {"<arg>": "10"}
-  },
+    "expected": 
+      "<arg>": "10"
+  }
   {
     "input": "prog 10 20"
     "expected": "user-error"
-  },
+  }
   {
     # FIXME (Python returns {'<arg>': 'prog'})
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
+
 
 "usage: prog [<arg>]": [
   {
     "input": "prog 10"
-    "expected": {"<arg>": "10"}
-  },
+    "expected": 
+      "<arg>": "10"
+  }
   {
     "input": "prog 10 20"
     "expected": "user-error"
-  },
+  }
   {
     # FIXME (Python returns {'<arg>': 'prog'})
     "input": "prog"
-    "expected": {"<arg>": null}
+    "expected": 
+      "<arg>": null
   }
-],
+]
 
 
 "usage: prog <kind> <name> <type>": [
@@ -532,17 +555,17 @@ options: -a
       "<kind>": "10"
       "<name>": "20"
       "<type>": "40"
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog 10 20"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 "usage: prog <kind> [<name> <type>]": [
@@ -552,7 +575,7 @@ options: -a
       "<kind>": "10"
       "<name>": "20"
       "<type>": "40"
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog 10 20"
@@ -560,27 +583,27 @@ options: -a
       "<kind>": "10"
       "<name>": "20"
       "<type>": null
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 "usage: prog [<kind> | <name> <type>]": [
   {
     "input": "prog 10 20 40"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog 20 40"
     "expected":
       "<kind>": null
       "<name>": "20"
       "<type>": "40"
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
@@ -589,7 +612,7 @@ options: -a
       "<name>": null
       "<type>": null
   }
-],
+]
 
 
 """
@@ -605,20 +628,20 @@ options:
       "<kind>": "10"
       "--all": true
       "<name>":null 
-  },
+  }
   {
     "input": "prog 10"
     "expected":
       "<kind>": null
       "--all": false
       "<name>":"10" 
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 "usage: prog [<name> <name>]": [
@@ -626,20 +649,20 @@ options:
     "input": "prog 10 20"
     "expected":
       "<name>": ["10", "20"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog 10"
     "expected":
       "<name>": ["10"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected":
       "<name>": []
   }
-],
+]
 
 
 "usage: prog [(<name> <name>)]": [
@@ -647,18 +670,18 @@ options:
     "input": "prog 10 20"
     "expected": 
       "<name>": ["10", "20"]
-  },
+  }
   {
     # FIXME: (Python)
     "input": "prog 10"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog"
     "expected":
       "<name>": []
   }
-],
+]
 
 
 "usage: prog NAME...": [
@@ -667,19 +690,19 @@ options:
     "input": "prog 10 20"
     "expected": 
       "NAME": ["10", "20"]
-  },
+  }
   {
     # FIXME: (Python)
     "input": "prog 10"
     "expected": 
       "NAME": ["10"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected": "user-error"
   }
-],
+]
 
 
 "usage: prog [NAME]...": [
@@ -688,20 +711,20 @@ options:
     "input": "prog 10 20"
     "expected": 
       "NAME": ["10", "20"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog 10"
     "expected": 
       "NAME": ["10"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected": 
       "NAME": []
   }
-],
+]
 
 
 "usage: prog [NAME...]": [
@@ -710,20 +733,20 @@ options:
     "input": "prog 10 20"
     "expected": 
       "NAME": ["10", "20"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog 10"
     "expected": 
       "NAME": ["10"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected": 
       "NAME": []
   }
-],
+]
 
 
 """
@@ -737,18 +760,18 @@ options: --foo
     "expected": 
       "NAME": "10"
       "--foo": false
-  },
+  }
   {
     "input": "prog --foo 10"
     "expected": 
       "NAME": "10"
       "--foo": true
-  },
+  }
   {
     "input": "prog --foo=10"
     "expected": "user-error"
   }
-],
+]
 
 
 """
@@ -765,14 +788,14 @@ options: --bar
       "NAME": ["10"]
       "--foo": false
       "--bar": false
-  },
+  }
   {
     "input": "prog 10 20"
     "expected":
       "NAME": ["10", "20"]
       "--foo": false
       "--bar": false
-  },
+  }
   {
     "input": "prog --foo --bar"
     "expected":
@@ -780,7 +803,7 @@ options: --bar
       "--foo": true
       "--bar": true
   }
-],
+]
 
 
 """
@@ -821,7 +844,7 @@ Options:
       "ship": true
       "shoot": false
   }
-],
+]
 
 
 "usage: prog --hello": [
@@ -830,7 +853,7 @@ Options:
     "expected":
       "--hello": true
   }
-],
+]
 
 
 "usage: prog [--hello=<world>]": [
@@ -838,13 +861,13 @@ Options:
     "input": "prog"
     "expected":
       "--hello": null
-  },
+  }
   {
     "input": "prog --hello wrld"
     "expected":
       "--hello": "wrld"
   }
-],
+]
 
 
 "usage: prog [-o]": [
@@ -852,13 +875,13 @@ Options:
     "input": "prog"
     "expected":
       "-o": false
-  },
+  }
   {
     "input": "prog -o"
     "expected":
       "-o": true
   }
-],
+]
 
 
 "usage: prog [-opr]": [
@@ -869,7 +892,7 @@ Options:
       "-p": true
       "-r": false 
   }
-],
+]
 
 
 "usage: prog --aabb | --aa": [
@@ -878,12 +901,12 @@ Options:
     "expected":
       "--aabb": false
       "--aa": true 
-  },
+  }
   {
     "input": "prog --a"
     "expected": "user-error"
   }
-],
+]
 
 
 #   Counting number of flags
@@ -893,7 +916,7 @@ Options:
     "expected":
       "-v": true
   }
-],
+]
 
 
 "Usage: prog [-v -v]": [
@@ -901,41 +924,41 @@ Options:
     "input": "prog"
     "expected":
       "-v": 0
-  },
+  }
   {
     "input": "prog -v"
     "expected":
       "-v": 1
-  },
+  }
   {
     "input": "prog -vv"
     "expected":
       "-v": 2
   }
-],
+]
 
 
 "Usage: prog -v ...": [
   {
     "input": "prog"
     "expected": "user-error"
-  },
+  }
   {
     "input": "prog -v"
     "expected":
       "-v": 1
-  },
+  }
   {
     "input": "prog -vv"
     "expected":
       "-v": 2
-  },
+  }
   {
     "input": "prog -vvvvvv"
     "expected":
       "-v": 6
   }
-],
+]
 
 
 """
@@ -948,22 +971,22 @@ This one is probably most readable user-friednly variant.
     "input": "prog"
     "expected":
       "-v": 0
-  },
+  }
   {
     "input": "prog -v"
     "expected":
       "-v": 1
-  },
+  }
   {
     "input": "prog -vv"
     "expected":
       "-v": 2
-  },
+  }
   {
     "input": "prog -vvvv"
     "expected": "user-error"
   }
-],
+]
 
 
 "usage: prog [--ver --ver]": [
@@ -982,7 +1005,7 @@ This one is probably most readable user-friednly variant.
     "expected":
       "go": true
   }
-],
+]
 
 
 "usage: prog [go go]": [
@@ -990,22 +1013,22 @@ This one is probably most readable user-friednly variant.
     "input": "prog"
     "expected":
       "go": 0
-  },
+  }
   {
     "input": "prog go"
     "expected":
       "go": 1
-  },
+  }
   {
     "input": "prog go go"
     "expected":
       "go": 2
-  },
+  }
   {
     "input": "prog go go go"
     "expected": "user-error"
   }
-],
+]
 
 
 "usage: prog go...": [
@@ -1014,7 +1037,7 @@ This one is probably most readable user-friednly variant.
     "expected":
       "go": 5
   }
-],
+]
 
 
 # [options] does not include options from usage-pattern
@@ -1029,12 +1052,12 @@ options: -a
     "expected":
       "-a": true
       "-b": false 
-  },
+  }
   {
     "input": "prog -aa"
     "expected": "user-error"
   }
-],
+]
 
 
 # Test [options] shourtcut
@@ -1050,14 +1073,14 @@ Options:
       "A": "arg"
       "-v": false
       "-q": false 
-  },
+  }
   {
     "input": "prog -v arg"
     "expected":
       "A": "arg"
       "-v": true
       "-q": false 
-  },
+  }
   {
     "input": "prog -q arg"
     "expected":
@@ -1065,7 +1088,7 @@ Options:
       "-v": false
       "-q": true 
   }
-],
+]
 
 
 # Test single dash
@@ -1074,13 +1097,13 @@ Options:
     "input": "prog -"
     "expected":
       "-": true
-  },
+  }
   {
     "input": "prog"
     "expected":
       "-": false
   }
-],
+]
 
 
 # If argument is repeated, its value should always be a list
@@ -1090,32 +1113,32 @@ Options:
     "input": "prog a b"
     "expected": 
       "NAME": ["a", "b"]
-  },
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected": 
-      "NAME": []
-  },
-  {
-    # FIXME (Python)
-    "input": "prog 10 20"
-    "expected": 
-      "NAME": ["10", "20"]
-  },
-  {
-    # FIXME (Python)
-    "input": "prog 10"
-    "expected": 
-      "NAME": ["10"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected": 
       "NAME": []
   }
-],
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  }
+]
 
 
 # Option's argument defaults to null/None
@@ -1133,7 +1156,7 @@ options:
       "-m": null
       "-a": true 
   }
-],
+]
 
 
 # Test options without description
@@ -1143,7 +1166,7 @@ options:
     "expected":
       "--hello": true
   }
-],
+]
 
 
 "usage: prog [--hello=<world>]": [
@@ -1151,13 +1174,13 @@ options:
     "input": "prog"
     "expected":
       "--hello": null
-  },
+  }
   {
     "input": "prog --hello wrld"
     "expected":
       "--hello": "wrld"
   }
-],
+]
 
 
 "usage: prog [-o]": [
@@ -1165,13 +1188,13 @@ options:
     "input": "prog"
     "expected":
       "-o": false
-  },
+  }
   {
     "input": "prog -o"
     "expected":
       "-o": true
   }
-],
+]
 
 
 "usage: prog [-opr]": [
@@ -1182,7 +1205,7 @@ options:
       "-p": true
       "-r": false
   }
-],
+]
 
 
 "usage: git [-v | --verbose]": [
@@ -1192,7 +1215,7 @@ options:
       "-v": true
       "--verbose": false 
   }
-],
+]
 
 
 "usage: git remote [-v | --verbose]": [
@@ -1203,7 +1226,7 @@ options:
       "-v": true
       "--verbose": false
   }
-],
+]
 
 
 # Test empty usage pattern
@@ -1212,7 +1235,7 @@ options:
     "input": "prog"
     "expected": {}
   }
-],
+]
 
 
 """
@@ -1224,14 +1247,14 @@ usage: prog
     "expected":
       "<a>": "1"
       "<b>": "2" 
-  },
+  }
   {
     "input": "prog"
     "expected":
       "<a>": null
       "<b>": null 
   }
-],
+]
 
 
 """
@@ -1244,7 +1267,7 @@ usage: prog <a> <b>
       "<a>": null
       "<b>": null
   }
-],
+]
 
 
 # Option's argument should not capture default value from usage pattern
@@ -1254,7 +1277,7 @@ usage: prog <a> <b>
     "expected":
       "--file": null
   }
-],
+]
 
 
 """
@@ -1268,7 +1291,7 @@ options: --file <a>
     "expected": 
       "--file": null
   }
-],
+]
 
 
 """
@@ -1283,7 +1306,7 @@ Options: -a, --address <host:port>  TCP address [default: localhost:6283].
     "expected":
       "--address": "localhost:6283"
   }
-],
+]
 
 
 # If option with argument could be repeated, arguments should accumulate into a list
@@ -1292,13 +1315,13 @@ Options: -a, --address <host:port>  TCP address [default: localhost:6283].
     "input": "prog --long one"
     "expected": 
       "--long": ["one"]
-  },
+  }
   {
     "input": "prog --long one --long two"
     "expected":
       "--long": ["one", "two"]
   }
-],
+]
 
 
 # Test multiple elements repeated at once
@@ -1310,7 +1333,7 @@ Options: -a, --address <host:port>  TCP address [default: localhost:6283].
       "<direction>": ["left", "right"]
       "--speed": ["5", "9"]
   }
-],
+]
 
 
 # Required options should work with option shortcut
@@ -1339,14 +1362,14 @@ options: -o <o>  [default: x]
     "input": "prog -o this -o that"
     "expected":
       "-o": ["this", "that"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected":
       "-o": ["x"]
   }
-],
+]
 
 
 """
@@ -1360,14 +1383,14 @@ options: -o <o>  [default: x y]
     "input": "prog -o this"
     "expected":
       "-o": ["this"]
-  },
+  }
   {
     # FIXME (Python)
     "input": "prog"
     "expected":
       "-o": ["x", "y"]
   }
-],
+]
 
 
 # Test stacked option's argument
@@ -1382,7 +1405,7 @@ options: -p PATH
     "expected":
       "-p": "HOME"
   }
-],
+]
 
 
 #   Issue 56: 
@@ -1394,7 +1417,7 @@ options: -p PATH
       "--xx": ["1"]
       "--yy": ["2"]
   }
-],
+]
 
 
 
@@ -1405,7 +1428,7 @@ options: -p PATH
     "expected":
       "<input file>": "f.txt"
   }
-],
+]
 
 
 "usage: prog [--input=<file name>]...": [
@@ -1414,7 +1437,7 @@ options: -p PATH
     "expected":
       "--input": ["a.txt", "b.txt"]
   }
-],
+]
 
 
 # Issue 85: 
@@ -1433,7 +1456,7 @@ options: --loglevel=N
       "fail": true
       "good": false 
   }
-],
+]
 
 
 # Usage-section syntax
@@ -1443,7 +1466,7 @@ options: --loglevel=N
     "expected":
       "--foo": true
   }
-],
+]
 
 
 "PROGRAM USAGE: prog --foo": [
@@ -1452,7 +1475,7 @@ options: --loglevel=N
     "expected":
       "--foo": true
   }
-],
+]
 
 
 """
@@ -1466,7 +1489,7 @@ NOT PART OF SECTION
       "--foo": true
       "--bar": false 
   }
-],
+]
 
 
 """
@@ -1482,7 +1505,7 @@ NOT PART OF SECTION
       "--foo": true
       "--bar": false 
   }
-],
+]
 
 
 """
@@ -1497,7 +1520,7 @@ NOT PART OF SECTION
       "--foo": true
       "--bar": false 
   }
-],
+]
 
 
 # Options-section syntax
