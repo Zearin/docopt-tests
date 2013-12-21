@@ -5,10 +5,6 @@
 
 "Usage: prog": [
   {
-    "input": "prog"
-    "expected": {}
-  }
-  {
     "input": "prog --xxx"
     "expected": "user-error"
   }
