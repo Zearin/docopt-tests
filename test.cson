@@ -909,16 +909,6 @@ Options:
 ]
 
 
-#   Counting number of flags
-"Usage: prog -v": [
-  {
-    "input": "prog -v"
-    "expected":
-      "-v": true
-  }
-]
-
-
 "Usage: prog [-v -v]": [
   {
     "input": "prog"
@@ -998,177 +988,6 @@ This one is probably most readable user-friednly variant.
 ]
 
 
-# Counting commands
-"usage: prog [go]": [
-  {
-    "input": "prog go"
-    "expected":
-      "go": true
-  }
-]
-
-
-"usage: prog [go go]": [
-  {
-    "input": "prog"
-    "expected":
-      "go": 0
-  }
-  {
-    "input": "prog go"
-    "expected":
-      "go": 1
-  }
-  {
-    "input": "prog go go"
-    "expected":
-      "go": 2
-  }
-  {
-    "input": "prog go go go"
-    "expected": "user-error"
-  }
-]
-
-
-"usage: prog go...": [
-  {
-    "input": "prog go go go go go"
-    "expected":
-      "go": 5
-  }
-]
-
-
-# [options] does not include options from usage-pattern
-"""
-usage: prog [options] [-a]
-
-options: -a
-     -b
-""": [
-  {
-    "input": "prog -a"
-    "expected":
-      "-a": true
-      "-b": false 
-  }
-  {
-    "input": "prog -aa"
-    "expected": "user-error"
-  }
-]
-
-
-# Test [options] shourtcut
-"""
-Usage: prog [options] A
-Options:
-  -q  Be quiet
-  -v  Be verbose.
-""": [
-  {
-    "input": "prog arg"
-    "expected":
-      "A": "arg"
-      "-v": false
-      "-q": false 
-  }
-  {
-    "input": "prog -v arg"
-    "expected":
-      "A": "arg"
-      "-v": true
-      "-q": false 
-  }
-  {
-    "input": "prog -q arg"
-    "expected":
-      "A": "arg"
-      "-v": false
-      "-q": true 
-  }
-]
-
-
-# Test single dash
-"usage: prog [-]": [
-  {
-    "input": "prog -"
-    "expected":
-      "-": true
-  }
-  {
-    "input": "prog"
-    "expected":
-      "-": false
-  }
-]
-
-
-# If argument is repeated, its value should always be a list
-"usage: prog [NAME [NAME ...]]": [
-  {
-    # FIXME (Python)
-    "input": "prog a b"
-    "expected": 
-      "NAME": ["a", "b"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected": 
-      "NAME": []
-  }
-  {
-    # FIXME (Python)
-    "input": "prog 10 20"
-    "expected": 
-      "NAME": ["10", "20"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog 10"
-    "expected": 
-      "NAME": ["10"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected": 
-      "NAME": []
-  }
-]
-
-
-# Option's argument defaults to null/None
-"""
-usage: prog [options]
-
-options:
-  -a        Add
-  -m <msg>  Message
-
-""": [
-  {
-    "input": "prog -a"
-    "expected": 
-      "-m": null
-      "-a": true 
-  }
-]
-
-
-# Test options without description
-"usage: prog --hello": [
-  {
-    "input": "prog --hello"
-    "expected":
-      "--hello": true
-  }
-]
-
-
 "usage: prog [--hello=<world>]": [
   {
     "input": "prog"
@@ -1229,15 +1048,6 @@ options:
 ]
 
 
-# Test empty usage pattern
-"usage: prog": [
-  {
-    "input": "prog"
-    "expected": {}
-  }
-]
-
-
 """
 usage: prog
    prog <a> <b>
@@ -1266,16 +1076,6 @@ usage: prog <a> <b>
     "expected":
       "<a>": null
       "<b>": null
-  }
-]
-
-
-# Option's argument should not capture default value from usage pattern
-"usage: prog [--file=<f>]": [
-  {
-    "input": "prog"
-    "expected":
-      "--file": null
   }
 ]
 
@@ -1309,69 +1109,6 @@ Options: -a, --address <host:port>  TCP address [default: localhost:6283].
 ]
 
 
-# If option with argument could be repeated, arguments should accumulate into a list
-"usage: prog --long=<arg> ...": [
-  {
-    "input": "prog --long one"
-    "expected": 
-      "--long": ["one"]
-  }
-  {
-    "input": "prog --long one --long two"
-    "expected":
-      "--long": ["one", "two"]
-  }
-]
-
-
-# Test multiple elements repeated at once
-"usage: prog (go <direction> --speed=<km/h>)...": [
-  {
-    "input": "prog go left --speed=5 go right --speed=9"
-    "expected":
-      "go": 2
-      "<direction>": ["left", "right"]
-      "--speed": ["5", "9"]
-  }
-]
-
-
-# Required options should work with option shortcut
-"""
-usage: prog [options] -a
-
-options: -a
-
-""": [
-  {
-    "input": "prog -a"
-    "expected":
-      "-a": true
-  }
-]
-
-# If option could be repeated its defaults should be split into a list
-"""
-usage: prog [-o <o>]...
-
-options: -o <o>  [default: x]
-
-""": [
-  {
-    # FIXME (Python)
-    "input": "prog -o this -o that"
-    "expected":
-      "-o": ["this", "that"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected":
-      "-o": ["x"]
-  }
-]
-
-
 """
 usage: prog [-o <o>]...
 
@@ -1393,158 +1130,10 @@ options: -o <o>  [default: x y]
 ]
 
 
-# Test stacked option's argument
-"""
-usage: prog -pPATH
-
-options: -p PATH
-
-""": [
-  {
-    "input": "prog -pHOME"
-    "expected":
-      "-p": "HOME"
-  }
-]
-
-
-#   Issue 56: 
-#       Repeated mutually exclusive args give nested lists sometimes
-"Usage: foo (--xx=x|--yy=y)...": [
-  {
-    "input": "prog --xx=1 --yy=2"
-    "expected": 
-      "--xx": ["1"]
-      "--yy": ["2"]
-  }
-]
-
-
-
-# POSIXly correct tokenization
-"usage: prog [<input file>]": [
-  {
-    "input": "prog f.txt"
-    "expected":
-      "<input file>": "f.txt"
-  }
-]
-
-
 "usage: prog [--input=<file name>]...": [
   {
     "input": "prog --input a.txt --input=b.txt"
     "expected":
       "--input": ["a.txt", "b.txt"]
-  }
-]
-
-
-# Issue 85: 
-#   `[options]` shourtcut with multiple subcommands
-"""
-usage: prog good [options]
-   prog fail [options]
-
-options: --loglevel=N
-
-""": [
-  {
-    "input": "prog fail --loglevel 5"
-    "expected":
-      "--loglevel": "5"
-      "fail": true
-      "good": false 
-  }
-]
-
-
-# Usage-section syntax
-"usage:prog --foo": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-  }
-]
-
-
-"PROGRAM USAGE: prog --foo": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-  }
-]
-
-
-"""
-Usage: prog --foo
-   prog --bar
-NOT PART OF SECTION
-""": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-      "--bar": false 
-  }
-]
-
-
-"""
-Usage:
-  prog --foo
-  prog --bar
-
-NOT PART OF SECTION
-""": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-      "--bar": false 
-  }
-]
-
-
-"""
-Usage:
-  prog --foo
-  prog --bar
-NOT PART OF SECTION
-""": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-      "--bar": false 
-  }
-]
-
-
-# Options-section syntax
-"""
-Usage: prog [options]
-
-global options:
-  --foo
-local options:
-  --baz
-  --bar
-other options:
-  --egg
-  --spam
--not-an-option-
-
-""": [
-  {
-    "input": "prog --baz --egg"
-    "expected":
-      "--foo": false
-      "--baz": true
-      "--bar": false
-      "--egg": true
-      "--spam": false 
   }
 ]

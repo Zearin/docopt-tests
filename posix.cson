@@ -1,0 +1,13 @@
+###
+#   Language-agnostic tests for docopt
+###
+
+
+# POSIXly correct tokenization
+"usage: prog [<input file>]": [
+  {
+    "input": "prog f.txt"
+    "expected":
+      "<input file>": "f.txt"
+  }
+]
