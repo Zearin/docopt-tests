@@ -1,1634 +1,1527 @@
 ###
 #   Language-agnostic tests for docopt
 ###
-"test-batches": [
+
+"Usage: prog": [
   {
-    "doc": "Usage: prog",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {}
-      },
-      {
-        "input": "prog --xxx",
-        "expected": "user-error"
-      }
-    ]
+    "input": "prog"
+    "expected": {}
   },
   {
-    "doc": """
-    Usage: prog [options]
+    "input": "prog --xxx"
+    "expected": "user-error"
+  }
+],
+
+
+"""
+Usage: prog [options]
+
+Options: -a  All.
+
+""": [
+  {
+    "input": "prog"
+    "expected": {"-a": false}
+  },
+  {
+    "input": "prog -a"
+    "expected": {"-a": true}
+  },
+  {
+    "input": "prog -x"
+    "expected": "user-error"
+  }
+],
+
+
+"""
+Usage: prog [options]
   
-    Options: -a  All.
+  Options: --all  All.
   
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"-a": false}
-      },
-      {
-        "input": "prog -a",
-        "expected": {"-a": true}
-      },
-      {
-        "input": "prog -x",
-        "expected": "user-error"
-      }
-    ]
+""": [
+  {
+    "input": "prog"
+    "expected": {"--all": false}
   },
   {
-    "doc": """
-    Usage: prog [options]
-      
-      Options: --all  All.
-      
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"--all": false}
-      },
-      {
-        "input": "prog --all",
-        "expected": {"--all": true}
-      },
-      {
-        "input": "prog --xxx",
-        "expected": "user-error"
-      }
-    ]
+    "input": "prog --all"
+    "expected": {"--all": true}
   },
   {
-    "doc": """
-    Usage: prog [options]
-    
-    Options: -v, --verbose  Verbose.
-    
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog --verbose",
-        "expected": {"--verbose": true}
-      },
-      {
-        "input": "prog --ver",
-        "expected": {"--verbose": true}
-      },
-      {
-        "input": "prog -v",
-        "expected": {"--verbose": true}
-      }
-    ]
+    "input": "prog --xxx"
+    "expected": "user-error"
+  }
+],
+
+
+"""
+Usage: prog [options]
+
+Options: -v, --verbose  Verbose.
+
+""": [
+  {
+    "input": "prog --verbose"
+    "expected": {"--verbose": true}
   },
   {
-    "doc":  """
-    Usage: prog [options]
-    
-    Options: -p PATH
-    
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -p home/",
-        "expected": {"-p": "home/"}
-      },
-      {
-        "input": "prog -phome/",
-        "expected": {"-p": "home/"}
-      },
-      {
-        "input": "prog -p",
-        "expected": "user-error"
-      }
-    ]
+    "input": "prog --ver"
+    "expected": {"--verbose": true}
   },
   {
-    "doc": """
-    Usage: prog [options]
+    "input": "prog -v"
+    "expected": {"--verbose": true}
+  }
+],
 
-    Options: --path <path>
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog --path home/",
-        "expected": {"--path": "home/"}
-      },
-      {
-        "input": "prog --path=home/",
-        "expected": {"--path": "home/"}
-      },
-      {
-        "input": "prog --pa home/",
-        "expected": {"--path": "home/"}
-      },
-      {
-        "input": "prog --pa=home/",
-        "expected": {"--path": "home/"}
-      },
-      {
-        "input": "prog --path",
-        "expected": "user-error"
-      }
-    ]
+"""
+Usage: prog [options]
+
+  Options: -p PATH
+
+""": [
+  {
+    "input": "prog -p home/"
+    "expected": {"-p": "home/"}
   },
   {
-   "doc": """
-   Usage: prog [options]
-
-    Options: -p PATH, --path=<path>  Path to files.
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -proot",
-        "expected": {"--path": "root"}
-      }
-    ]
-  },    
-  {
-    "doc": """
-    Usage: prog [options]
-
-    Options:    -p --path PATH  Path to files.
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -p root",
-        "expected": {"--path": "root"}
-      },
-      {
-        "input": "prog --path root",
-        "expected": {"--path": "root"}
-      }
-    ]
+    "input": "prog -phome/"
+    "expected": {"-p": "home/"}
   },
   {
-    "doc": """
-    Usage: prog [options]
+    "input": "prog -p"
+    "expected": "user-error"
+  }
+],
 
-    Options:
-     -p PATH  Path to files [default: ./]
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"-p": "./"}
-      },
-      {
-        "input": "prog -phome",
-        "expected": {"-p": "home"}
-      }
-    ]
+"""
+Usage: prog [options]
+
+Options: --path <path>
+
+""": [
+  {
+    "input": "prog --path home/"
+    "expected": {"--path": "home/"}
   },
   {
-    "doc": """
-    UsAgE: prog [options]
-
-    OpTiOnS: --path=<files>  Path to files
-                    [dEfAuLt: /root]
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"--path": "/root"}
-      },
-      {
-        "input": "prog --path=home",
-        "expected": {"--path": "home"}
-      }
-    ]
-  },
-  
-  {
-    "doc": """
-    usage: prog [options]
-
-    options:
-        -a        Add
-        -r        Remote
-        -m <msg>  Message
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -r -m Hello",
-        "expected": { 
-          "-a": true, 
-          "-r": true, 
-          "-m": "Hello" 
-        }
-      },
-      {
-        "input": "prog -armyourass",
-        "expected": { 
-          "-a": true, 
-          "-r": true, 
-          "-m": "yourass" 
-        }
-      },
-      {
-        "input": "prog -a -r",
-        "expected": { 
-          "-a": true, 
-          "-r": true, 
-          "-m": null 
-        }
-      }
-    ]
+    "input": "prog --path=home/"
+    "expected": {"--path": "home/"}
   },
   {
-    "doc": """
-    Usage: prog [options]
-
-    Options: --version
-             --verbose
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog --version",
-        "expected": { 
-          "--version": true, 
-          "--verbose": false 
-        }
-      },
-      {
-        "input": "prog --verbose",
-        "expected": { 
-          "--version": false, 
-          "--verbose": true 
-        }
-      },
-      {
-        "input": "prog --ver",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog --verb",
-        "expected": { 
-          "--version": false, 
-          "--verbose": true 
-        }
-      }
-    ]
+    "input": "prog --pa home/"
+    "expected": {"--path": "home/"}
   },
   {
-    "doc": """
-    usage: prog [-a -r -m <msg>]
+    "input": "prog --pa=home/"
+    "expected": {"--path": "home/"}
+  },
+  {
+    "input": "prog --path"
+    "expected": "user-error"
+  }
+],
 
-    options:
-     -a        Add
+
+"""
+Usage: prog [options]
+
+Options: -p PATH, --path=<path>  Path to files.
+
+""": [
+  {
+    "input": "prog -proot"
+    "expected": {"--path": "root"}
+  }
+],
+
+
+"""
+Usage: prog [options]
+
+Options:    -p --path PATH  Path to files.
+
+""": [
+  {
+    "input": "prog -p root"
+    "expected": {"--path": "root"}
+  },
+  {
+    "input": "prog --path root"
+    "expected": {"--path": "root"}
+  }
+],
+
+
+"""
+Usage: prog [options]
+
+Options:
+ -p PATH  Path to files [default: ./]
+
+""": [
+  {
+    "input": "prog"
+    "expected": {"-p": "./"}
+  },
+  {
+    "input": "prog -phome"
+    "expected": {"-p": "home"}
+  }
+],
+
+
+"""
+UsAgE: prog [options]
+
+OpTiOnS: --path=<files>  Path to files
+            [dEfAuLt: /root]
+
+""": [
+  {
+    "input": "prog"
+    "expected": {"--path": "/root"}
+  },
+  {
+    "input": "prog --path=home"
+    "expected": {"--path": "home"}
+  }
+],
+
+
+"""
+usage: prog [options]
+
+options:
+    -a        Add
+    -r        Remote
+    -m <msg>  Message
+
+""": [
+  {
+    "input": "prog -a -r -m Hello"
+    "expected":
+      "-a": true
+      "-r": true
+      "-m": "Hello" 
+  },
+  {
+    "input": "prog -armyourass"
+    "expected":
+      "-a": true
+      "-r": true 
+      "-m": "yourass"
+  },
+  {
+    "input": "prog -a -r"
+    "expected":
+      "-a": true 
+      "-r": true
+      "-m": null 
+  }
+],
+
+
+"""
+Usage: prog [options]
+
+Options: --version
+     --verbose
+
+""": [
+  {
+    "input": "prog --version"
+    "expected":
+      "--version": true
+      "--verbose": false 
+  },
+  {
+    "input": "prog --verbose"
+    "expected": { 
+      "--version": false
+      "--verbose": true 
+    }
+  },
+  {
+    "input": "prog --ver"
+    "expected": "user-error"
+  },
+  {
+    "input": "prog --verb"
+    "expected":
+      "--version": false
+      "--verbose": true 
+  }
+],
+
+
+"""
+usage: prog [-a -r -m <msg>]
+
+options:
+ -a        Add
+ -r        Remote
+ -m <msg>  Message
+
+""": [
+  {
+    "input": "prog -armyourass"
+    "expected":
+      "-a": true
+      "-r": true
+      "-m": "yourass" 
+  }
+],
+
+
+"""
+usage: prog [-armmsg]
+
+options: -a        Add
      -r        Remote
      -m <msg>  Message
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -armyourass",
-        "expected": {
-            "-a": true, 
-            "-r": true, 
-            "-m": "yourass" 
-        }
-      }
-    ]
+""": [
+  {
+    "input": "prog -a -r -m Hello"
+    "expected":
+      "-a": true
+      "-r": true
+      "-m": "Hello" 
+  }
+],
+
+
+"""
+usage: prog -a -b
+
+options:
+ -a
+ -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": 
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": """
-    usage: prog [-armmsg]
-  
-    options: -a        Add
-             -r        Remote
-             -m <msg>  Message
-  
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -r -m Hello",
-        "expected": { 
-          "-a": true, 
-          "-r": true, 
-          "-m": "Hello" 
-        }
-      }
-    ]
+    "input": "prog -b -a"
+    "expected": 
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": """
-    usage: prog -a -b
-  
-    options:
-     -a
+    "input": "prog -a"
+    "expected": "user-error"
+  },
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
+
+
+"""
+usage: prog (-a -b)
+
+options: -a
      -b
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -b",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -b -a",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -a",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": 
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": """
-    usage: prog (-a -b)
+    "input": "prog -b -a"
+    "expected": 
+      "-a": true
+      "-b": true 
+  },
+  {
+    "input": "prog -a"
+    "expected": "user-error"
+  },
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
 
-    options: -a
-             -b
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -b",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -b -a",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -a",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": """
-    usage: prog [-a] -b
+"""
+usage: prog [-a] -b
 
-    options: -a
-     -b
+options: -a
+ -b
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -b",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -b -a",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -a",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog -b",
-        "expected": { 
-          "-a": false, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": 
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": """
-    usage: prog [(-a -b)]
-
-    options: -a
-             -b
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -b",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -b -a",
-        "expected": { 
-          "-a": true, 
-          "-b": true 
-        }
-      },
-      {
-        "input": "prog -a",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog -b",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": { 
-          "-a": false, 
-          "-b": false 
-        }
-      }
-    ]
+    "input": "prog -b -a"
+    "expected": 
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": """
-    usage: prog (-a|-b)
-
-    options: -a
-             -b
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -b",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog -a",
-        "expected": {
-          "-a": true,
-          "-b": false
-        }
-      },
-      {
-        "input": "prog -b",
-        "expected": {
-          "-a": false,
-          "-b": true
-        }
-      }
-    ]
+    "input": "prog -a"
+    "expected": "user-error"
   },
   {
-    "doc": """
-    usage: prog [ -a | -b ]
-
-    options: -a
-             -b
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a -b",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": { 
-          "-a": false, 
-          "-b": false 
-        }
-      },
-      {
-        "input": "prog -a",
-        "expected": { 
-          "-a": true, 
-          "-b": false 
-        }
-      },
-      {
-        "input": "prog -b",
-        "expected": { 
-          "-a": false, 
-          "-b": true 
-        }
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog <arg>",
-    "tests": [
-      {
-        "input": "prog 10",
-        "expected": {"<arg>": "10"}
-      },
-      {
-        "input": "prog 10 20",
-        "expected": "user-error"
-      },
-      {
-        # FIXME (Python returns {'<arg>': 'prog'})
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [<arg>]",
-    "tests": [
-      {
-        "input": "prog 10",
-        "expected": {"<arg>": "10"}
-      },
-      {
-        "input": "prog 10 20",
-        "expected": "user-error"
-      },
-      {
-        # FIXME (Python returns {'<arg>': 'prog'})
-        "input": "prog",
-        "expected": {"<arg>": null}
-      }
-    ]
-  },    
-  {
-    "doc": "usage: prog <kind> <name> <type>",
-    "tests": [
-      {
-        "input": "prog 10 20 40",
-        "expected":{
-            "<kind>": "10",
-            "<name>": "20",
-            "<type>": "40"
-        }
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10 20",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog <kind> [<name> <type>]",
-    "tests": [
-      {
-        "input": "prog 10 20 40",
-        "expected": {
-            "<kind>": "10",
-            "<name>": "20",
-            "<type>": "40" }
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10 20",
-        "expected": {
-            "<kind>": "10",
-            "<name>": "20",
-            "<type>": null
-        }
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [<kind> | <name> <type>]",
-    "tests": [
-      {
-        "input": "prog 10 20 40",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog 20 40",
-        "expected": {
-             "<kind>": null,
-             "<name>": "20",
-             "<type>": "40" 
-        }
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {
-             "<kind>": null,
-             "<name>": null,
-             "<type>": null
-        }
-      }
-    ]
-  },
-  {
-    "doc": """
-    usage: prog (<kind> --all | <name>)
-
-    options:
-     --all
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog 10 --all",
-        "expected": { 
-            "<kind>": "10",
-            "--all": true, 
-            "<name>":null 
-        }
-      },
-      {
-        "input": "prog 10",
-        "expected": {
-            "<kind>": null, 
-            "--all": false, 
-            "<name>":"10" 
-        }
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [<name> <name>]",
-    "tests": [
-      {
-        "input": "prog 10 20",
-        "expected": {"<name>": ["10", "20"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10",
-        "expected": {"<name>": ["10"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"<name>": []}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [(<name> <name>)]",
-    "tests": [
-      {
-        "input": "prog 10 20",
-        "expected": {"<name>": ["10", "20"]}
-      },
-      {
-        # FIXME: (Python)
-        "input": "prog 10",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog",
-        "expected": {"<name>": []}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog NAME...",
-    "tests": [
-      {
-        # FIXME: (Python)
-        "input": "prog 10 20",
-        "expected": {"NAME": ["10", "20"]}
-      },
-      {
-        # FIXME: (Python)
-        "input": "prog 10",
-        "expected": {"NAME": ["10"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [NAME]...",
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog 10 20",
-        "expected": {"NAME": ["10", "20"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10",
-        "expected": {"NAME": ["10"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"NAME": []}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [NAME...]",
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog 10 20",
-        "expected": {"NAME": ["10", "20"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10",
-        "expected": {"NAME": ["10"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"NAME": []}
-      }
-    ]
-  },
-  {
-    "doc": """
-    usage: prog (NAME | --foo NAME)
-
-    options: --foo
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog 10",
-        "expected": { "NAME": "10", "--foo": false }
-      },
-      {
-        "input": "prog --foo 10",
-        "expected": { "NAME": "10", "--foo": true }
-      },
-      {
-        "input": "prog --foo=10",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": """
-    usage: prog (NAME | --foo) [--bar | NAME]
-  
-    options: --foo
-    options: --bar
-  
-    """
-    ,
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog 10",
-        "expected": {
-            "NAME": ["10"],
-            "--foo": false,
-            "--bar": false
-        }
-      },
-      {
-        "input": "prog 10 20",
-        "expected": {
-            "NAME": ["10", "20"],
-            "--foo": false,
-            "--bar": false
-        }
-      },
-      {
-        "input": "prog --foo --bar",
-        "expected": {
-            "NAME": [],
-            "--foo": true,
-            "--bar": true
-        }
-      }
-    ]
-  },
-  {
-    "doc": """
-    Naval Fate.
-  
-    Usage:
-      prog ship new <name>...
-      prog ship [<name>] move <x> <y> [--speed=<kn>]
-      prog ship shoot <x> <y>
-      prog mine (set|remove) <x> <y> [--moored|--drifting]
-      prog -h | --help
-      prog --version
-
-    Options:
-      -h --help     Show this screen.
-      --version     Show version.
-      --speed=<kn>  Speed in knots [default: 10].
-      --moored      Mored (anchored) mine.
-      --drifting    Drifting mine.
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog ship Guardian move 150 300 --speed=20",
-        "expected": {
-            "--drifting": false,
-            "--help": false,
-            "--moored":false,
-            "--speed": "20",
-            "--version": false,
-            "<name>":["Guardian"],
-            "<x>": "150",
-            "<y>": "300",
-            "mine":false,
-            "move": true,
-            "new": false,
-            "remove": false,
-            "set": false,
-            "ship": true,
-            "shoot": false
-        }
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog --hello",
-    "tests": [
-      {
-        "input": "prog --hello",
-        "expected": {"--hello": true}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [--hello=<world>]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"--hello": null}
-      },
-      {
-        "input": "prog --hello wrld",
-        "expected": {"--hello": "wrld"}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [-o]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"-o": false}
-      },
-      {
-        "input": "prog -o",
-        "expected": {"-o": true}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [-opr]",
-    "tests": [
-      {
-        "input": "prog -op",
-        "expected": {
-            "-o": true, 
-            "-p": true, 
-            "-r": false 
-        }
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog --aabb | --aa",
-    "tests": [
-      {
-        "input": "prog --aa",
-        "expected": {
-            "--aabb": false, 
-            "--aa": true 
-        }
-      },
-      {
-        "input": "prog --a",
-        "expected": "user-error"
-      }
-    ]
-  },
-  #   Counting number of flags
-  {
-    "doc": "Usage: prog -v",
-    "tests": [
-      {
-        "input": "prog -v",
-        "expected": {"-v": true}
-      }
-    ]
-  },
-  {
-    "doc": "Usage: prog [-v -v]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"-v": 0}
-      },
-      {
-        "input": "prog -v",
-        "expected": {"-v": 1}
-      },
-      {
-        "input": "prog -vv",
-        "expected": {"-v": 2}
-      }
-    ]
-  },
-  {
-    "doc": "Usage: prog -v ...",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": "user-error"
-      },
-      {
-        "input": "prog -v",
-        "expected": {"-v": 1}
-      },
-      {
-        "input": "prog -vv",
-        "expected": {"-v": 2}
-      },
-      {
-        "input": "prog -vvvvvv",
-        "expected": {"-v": 6}
-      }
-    ]
-  },
-  {
-    "doc": """
-    Usage: prog [-v | -vv | -vvv]
-
-    This one is probably most readable user-friednly variant.
-
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"-v": 0}
-      },
-      {
-        "input": "prog -v",
-        "expected": {"-v": 1}
-      },
-      {
-        "input": "prog -vv",
-        "expected": {"-v": 2}
-      },
-      {
-        "input": "prog -vvvv",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [--ver --ver]",
-    "tests": [
-      {
-        "input": "prog --ver --ver",
-        "expected": {"--ver": 2}
-      }
-    ]
-  },
-  # Counting commands
-  {
-    "doc": "usage: prog [go]",
-    "tests": [
-      {
-        "input": "prog go",
-        "expected": {"go": true}
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog [go go]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"go": 0}
-      },
-      {
-        "input": "prog go",
-        "expected": {"go": 1}
-      },
-      {
-        "input": "prog go go",
-        "expected": {"go": 2}
-      },
-      {
-        "input": "prog go go go",
-        "expected": "user-error"
-      }
-    ]
-  },
-  {
-    "doc": "usage: prog go...",
-    "tests": [
-      {
-        "input": "prog go go go go go",
-        "expected": {"go": 5}
-      }
-    ]
-  },
-  # [options] does not include options from usage-pattern
-  {
-    "doc": """
-    usage: prog [options] [-a]
-
-    options: -a
-             -b
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a",
-        "expected": { 
-          "-a": true, 
-          "-b": false 
-        }
-      },
-      {
-        "input": "prog -aa",
-        "expected": "user-error"
-      }
-    ]
-  },
-  # Test [options] shourtcut
-  {
-    "doc": """
-    Usage: prog [options] A
-    Options:
-      -q  Be quiet
-      -v  Be verbose.
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog arg",
-        "expected": { 
-          "A": "arg", 
-          "-v": false, 
-          "-q": false 
-        }
-      },
-      {
-        "input": "prog -v arg",
-        "expected": { 
-          "A": "arg", 
-          "-v": true, 
-          "-q": false 
-        }
-      },
-      {
-        "input": "prog -q arg",
-        "expected": { 
-          "A": "arg", 
-          "-v": false, 
-          "-q": true 
-        }
-      }
-    ]
-  },
-  # Test single dash
-  {
-    "doc": "usage: prog [-]",
-    "tests": [
-      {
-        "input": "prog -",
-        "expected": {"-": true}
-      },
-      {
-        "input": "prog",
-        "expected": {"-": false}
-      }
-    ]
-  },
-  # If argument is repeated, its value should always be a list
-  {
-    "doc": "usage: prog [NAME [NAME ...]]",
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog a b",
-        "expected": {"NAME": ["a", "b"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"NAME": []}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10 20",
-        "expected": {"NAME": ["10", "20"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog 10",
-        "expected": {"NAME": ["10"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"NAME": []}
-      }
-    ]
-  },
-  # Option's argument defaults to null/None
-  {
-    "doc": """
-    usage: prog [options]
+    "input": "prog -b"
+    "expected":  
+      "-a": false
+      "-b": true 
     
-    options:
-      -a        Add
-      -m <msg>  Message
+  },
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
 
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a",
-        "expected": { 
-          "-m": null, 
-          "-a": true 
-        }
-      }
-    ]
-  },
-  # Test options without description
+
+"""
+usage: prog [(-a -b)]
+
+options: -a
+     -b
+
+""": [
   {
-    "doc": "usage: prog --hello",
-    "tests": [
-      {
-        "input": "prog --hello",
-        "expected": {"--hello": true}
-      }
-    ]
+    "input": "prog -a -b"
+    "expected":
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": "usage: prog [--hello=<world>]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"--hello": null}
-      },
-      {
-        "input": "prog --hello wrld",
-        "expected": {"--hello": "wrld"}
-      }
-    ]
+    "input": "prog -b -a"
+    "expected":
+      "-a": true
+      "-b": true 
   },
   {
-    "doc": "usage: prog [-o]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"-o": false}
-      },
-      {
-        "input": "prog -o",
-        "expected": {"-o": true}
-      }
-    ]
+    "input": "prog -a"
+    "expected": "user-error"
   },
   {
-    "doc": "usage: prog [-opr]",
-    "tests": [
-      {
-        "input": "prog -op",
-        "expected": {
-          "-o": true,
-          "-p": true,
-          "-r": false
-        }
-      }
-    ]
+    "input": "prog -b"
+    "expected": "user-error"
   },
   {
-    "doc": "usage: git [-v | --verbose]",
-    "tests": [
-      {
-        "input": "prog -v",
-        "expected": { 
-            "-v": true, 
-            "--verbose": false 
-        }
-      }
-    ]
+    "input": "prog"
+    "expected":
+      "-a": false
+      "-b": false 
+  }
+],
+
+
+"""
+usage: prog (-a|-b)
+
+options: -a
+     -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": "user-error"
   },
   {
-    "doc": "usage: git remote [-v | --verbose]",
-    "tests": [
-      {
-        "input": "prog remote -v",
-        "expected": {
-          "remote": true,
-          "-v": true,
-          "--verbose": false
-        }
-      }
-    ]
-  },
-  # Test empty usage pattern
-  {
-    "doc": "usage: prog",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {}
-      }
-    ]
+    "input": "prog"
+    "expected": "user-error"
   },
   {
-    "doc": """
-    usage: prog
-           prog <a> <b>
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog 1 2",
-        "expected": { 
-          "<a>": "1", 
-          "<b>": "2" 
-        }
-      },
-      {
-        "input": "prog",
-        "expected": { 
-          "<a>": null, 
-          "<b>": null 
-        }
-      }
-    ]
+    "input": "prog -a"
+    "expected":
+      "-a": true
+      "-b": false
   },
   {
-    "doc": """
-    usage: prog <a> <b>
-           prog
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": { 
-          "<a>": null, 
-          "<b>": null
-        }
-      }
-    ]
-  },
-  # Option's argument should not capture default value from usage pattern
+    "input": "prog -b"
+    "expected":
+      "-a": false
+      "-b": true
+  }
+],
+
+
+"""
+usage: prog [ -a | -b ]
+
+options: -a
+     -b
+
+""": [
   {
-    "doc": "usage: prog [--file=<f>]",
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"--file": null}
-      }
-    ]
+    "input": "prog -a -b"
+    "expected": "user-error"
   },
   {
-    "doc": """
-    usage: prog [--file=<f>]
-  
-    options: --file <a>
-  
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog",
-        "expected": {"--file": null}
-      }
-    ]
+    "input": "prog"
+    "expected":
+      "-a": false
+      "-b": false 
   },
   {
-    "doc": """
-    Usage: prog [-a <host:port>]
-  
-    Options: -a, --address <host:port>  TCP address [default: localhost:6283].
-  
-    """
-    ,
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"--address": "localhost:6283"}
-      }
-    ]
-  },
-  # If option with argument could be repeated, arguments should accumulate into a list
-  {
-    "doc": "usage: prog --long=<arg> ...",
-    "tests": [
-      {
-        "input": "prog --long one",
-        "expected": {"--long": ["one"] }
-      },
-      {
-        "input": "prog --long one --long two",
-        "expected": {"--long": ["one", "two"] }
-      }
-    ]
-  },
-  # Test multiple elements repeated at once
-  {
-    "doc": "usage: prog (go <direction> --speed=<km/h>)...",
-    "tests": [
-      {
-        "input": "prog go left --speed=5 go right --speed=9",
-        "expected": {
-          "go": 2,
-          "<direction>": ["left", "right"],
-          "--speed": ["5", "9"]
-        }
-      }
-    ]
-  },
-  # Required options should work with option shortcut
-  {
-    "doc": """
-    usage: prog [options] -a
-  
-    options: -a
-  
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -a",
-        "expected": {"-a": true}
-      }
-    ]
-  },
-  # If option could be repeated its defaults should be split into a list
-  {
-    "doc": """
-    usage: prog [-o <o>]...
-  
-    options: -o <o>  [default: x]
-  
-    """
-    ,
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog -o this -o that",
-        "expected": {"-o": ["this", "that"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"-o": ["x"]}
-      }
-    ]
+    "input": "prog -a"
+    "expected":
+      "-a": true
+      "-b": false 
   },
   {
-    "doc": """
-    usage: prog [-o <o>]...
-  
-    options: -o <o>  [default: x y]
-  
-    """
-    ,
-    "tests": [
-      {
-        # FIXME (Python)
-        "input": "prog -o this",
-        "expected": {"-o": ["this"]}
-      },
-      {
-        # FIXME (Python)
-        "input": "prog",
-        "expected": {"-o": ["x", "y"]}
-      }
-    ]
-  },
-  # Test stacked option's argument
+    "input": "prog -b"
+    "expected":
+      "-a": false
+      "-b": true 
+  }
+],
+
+
+"usage: prog <arg>": [
   {
-    "doc": """
-    usage: prog -pPATH
-  
-    options: -p PATH
-  
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog -pHOME",
-        "expected": {"-p": "HOME"}
-      }
-    ]
-  },
-  #   Issue 56: 
-  #       Repeated mutually exclusive args give nested lists sometimes
-  {
-    "doc": "Usage: foo (--xx=x|--yy=y)...",
-    "tests": [
-      {
-        "input": "prog --xx=1 --yy=2",
-        "expected": { "--xx": ["1"], "--yy": ["2"] }
-      }
-    ]
-  },
-  # POSIXly correct tokenization
-  {
-    "doc": "usage: prog [<input file>]",
-    "tests": [
-      {
-        "input": "prog f.txt",
-        "expected": {"<input file>": "f.txt"}
-      }
-    ]
+    "input": "prog 10"
+    "expected": {"<arg>": "10"}
   },
   {
-    "doc": "usage: prog [--input=<file name>]...",
-    "tests": [
-      {
-        "input": "prog --input a.txt --input=b.txt",
-        "expected": {"--input": ["a.txt", "b.txt"]}
-      }
-    ]
-  },
-  # Issue 85: 
-  #   `[options]` shourtcut with multiple subcommands
-  {
-    "doc": """
-    usage: prog good [options]
-           prog fail [options]
-  
-    options: --loglevel=N
-  
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog fail --loglevel 5",
-        "expected": {
-          "--loglevel": "5",
-          "fail": true,
-          "good": false 
-        }
-      }
-    ]
-  },
-  # Usage-section syntax
-  {
-    "doc": "usage:prog --foo",
-    "tests": [
-      {
-        "input": "prog --foo",
-        "expected": {"--foo": true}
-      }
-    ]
+    "input": "prog 10 20"
+    "expected": "user-error"
   },
   {
-    "doc": "PROGRAM USAGE: prog --foo",
-    "tests": [
-      {
-        "input": "prog --foo",
-        "expected": {"--foo": true}
-      }
-    ]
+    # FIXME (Python returns {'<arg>': 'prog'})
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
+
+"usage: prog [<arg>]": [
+  {
+    "input": "prog 10"
+    "expected": {"<arg>": "10"}
   },
   {
-    "doc": """
-    Usage: prog --foo
-           prog --bar
-    NOT PART OF SECTION
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog --foo",
-        "expected": { 
-            "--foo": true, 
-            "--bar": false 
-        }
-      }
-    ]
+    "input": "prog 10 20"
+    "expected": "user-error"
   },
   {
-    "doc": """
-    Usage:
-      prog --foo
-      prog --bar
-  
-    NOT PART OF SECTION
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog --foo",
-        "expected": { 
-            "--foo": true, 
-            "--bar": false 
-        }
-      }
-    ]
+    # FIXME (Python returns {'<arg>': 'prog'})
+    "input": "prog"
+    "expected": {"<arg>": null}
+  }
+],
+
+
+"usage: prog <kind> <name> <type>": [
+  {
+    "input": "prog 10 20 40"
+    "expected":
+      "<kind>": "10"
+      "<name>": "20"
+      "<type>": "40"
   },
   {
-    "doc": """
-    Usage:
-      prog --foo
-      prog --bar
-    NOT PART OF SECTION
-    """,
-    "tests": [
-      {
-        "input": "prog --foo",
-        "expected": { 
-            "--foo": true, 
-            "--bar": false 
-        }
-      }
-    ]
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": "user-error"
   },
-  # Options-section syntax
   {
-    "doc": """
-    Usage: prog [options]
-  
-    global options:
-      --foo
-    local options:
-      --baz
-      --bar
-    other options:
-      --egg
-      --spam
-    -not-an-option-
-  
-    """
-    ,
-    "tests": [
-      {
-        "input": "prog --baz --egg",
-        "expected": {
-            "--foo": false,
-            "--baz": true,
-            "--bar": false,
-            "--egg":true,
-            "--spam": false 
-        }
-      }
-    ]
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
+
+
+"usage: prog <kind> [<name> <type>]": [
+  {
+    "input": "prog 10 20 40"
+    "expected":
+      "<kind>": "10"
+      "<name>": "20"
+      "<type>": "40"
+  },
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected":
+      "<kind>": "10"
+      "<name>": "20"
+      "<type>": null
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
+
+
+"usage: prog [<kind> | <name> <type>]": [
+  {
+    "input": "prog 10 20 40"
+    "expected": "user-error"
+  },
+  {
+    "input": "prog 20 40"
+    "expected":
+      "<kind>": null
+      "<name>": "20"
+      "<type>": "40"
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "<kind>": null
+      "<name>": null
+      "<type>": null
+  }
+],
+
+
+"""
+usage: prog (<kind> --all | <name>)
+
+options:
+ --all
+
+""": [
+  {
+    "input": "prog 10 --all"
+    "expected":
+      "<kind>": "10"
+      "--all": true
+      "<name>":null 
+  },
+  {
+    "input": "prog 10"
+    "expected":
+      "<kind>": null
+      "--all": false
+      "<name>":"10" 
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
+
+
+"usage: prog [<name> <name>]": [
+  {
+    "input": "prog 10 20"
+    "expected":
+      "<name>": ["10", "20"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected":
+      "<name>": ["10"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "<name>": []
+  }
+],
+
+
+"usage: prog [(<name> <name>)]": [
+  {
+    "input": "prog 10 20"
+    "expected": 
+      "<name>": ["10", "20"]
+  },
+  {
+    # FIXME: (Python)
+    "input": "prog 10"
+    "expected": "user-error"
+  },
+  {
+    "input": "prog"
+    "expected":
+      "<name>": []
+  }
+],
+
+
+"usage: prog NAME...": [
+  {
+    # FIXME: (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  },
+  {
+    # FIXME: (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": "user-error"
+  }
+],
+
+
+"usage: prog [NAME]...": [
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  }
+],
+
+
+"usage: prog [NAME...]": [
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  }
+],
+
+
+"""
+usage: prog (NAME | --foo NAME)
+
+options: --foo
+
+""": [
+  {
+    "input": "prog 10"
+    "expected": 
+      "NAME": "10"
+      "--foo": false
+  },
+  {
+    "input": "prog --foo 10"
+    "expected": 
+      "NAME": "10"
+      "--foo": true
+  },
+  {
+    "input": "prog --foo=10"
+    "expected": "user-error"
+  }
+],
+
+
+"""
+usage: prog (NAME | --foo) [--bar | NAME]
+
+options: --foo
+options: --bar
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected":
+      "NAME": ["10"]
+      "--foo": false
+      "--bar": false
+  },
+  {
+    "input": "prog 10 20"
+    "expected":
+      "NAME": ["10", "20"]
+      "--foo": false
+      "--bar": false
+  },
+  {
+    "input": "prog --foo --bar"
+    "expected":
+      "NAME": []
+      "--foo": true
+      "--bar": true
+  }
+],
+
+
+"""
+Naval Fate.
+
+Usage:
+  prog ship new <name>...
+  prog ship [<name>] move <x> <y> [--speed=<kn>]
+  prog ship shoot <x> <y>
+  prog mine (set|remove) <x> <y> [--moored|--drifting]
+  prog -h | --help
+  prog --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  --speed=<kn>  Speed in knots [default: 10].
+  --moored      Mored (anchored) mine.
+  --drifting    Drifting mine.
+
+""": [
+  {
+    "input": "prog ship Guardian move 150 300 --speed=20"
+    "expected":
+      "--drifting": false
+      "--help": false
+      "--moored":false
+      "--speed": "20"
+      "--version": false
+      "<name>":["Guardian"]
+      "<x>": "150"
+      "<y>": "300"
+      "mine":false
+      "move": true
+      "new": false
+      "remove": false
+      "set": false
+      "ship": true
+      "shoot": false
+  }
+],
+
+
+"usage: prog --hello": [
+  {
+    "input": "prog --hello"
+    "expected":
+      "--hello": true
+  }
+],
+
+
+"usage: prog [--hello=<world>]": [
+  {
+    "input": "prog"
+    "expected":
+      "--hello": null
+  },
+  {
+    "input": "prog --hello wrld"
+    "expected":
+      "--hello": "wrld"
+  }
+],
+
+
+"usage: prog [-o]": [
+  {
+    "input": "prog"
+    "expected":
+      "-o": false
+  },
+  {
+    "input": "prog -o"
+    "expected":
+      "-o": true
+  }
+],
+
+
+"usage: prog [-opr]": [
+  {
+    "input": "prog -op"
+    "expected":
+      "-o": true
+      "-p": true
+      "-r": false 
+  }
+],
+
+
+"usage: prog --aabb | --aa": [
+  {
+    "input": "prog --aa"
+    "expected":
+      "--aabb": false
+      "--aa": true 
+  },
+  {
+    "input": "prog --a"
+    "expected": "user-error"
+  }
+],
+
+
+#   Counting number of flags
+"Usage: prog -v": [
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": true
+  }
+],
+
+
+"Usage: prog [-v -v]": [
+  {
+    "input": "prog"
+    "expected":
+      "-v": 0
+  },
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": 1
+  },
+  {
+    "input": "prog -vv"
+    "expected":
+      "-v": 2
+  }
+],
+
+
+"Usage: prog -v ...": [
+  {
+    "input": "prog"
+    "expected": "user-error"
+  },
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": 1
+  },
+  {
+    "input": "prog -vv"
+    "expected":
+      "-v": 2
+  },
+  {
+    "input": "prog -vvvvvv"
+    "expected":
+      "-v": 6
+  }
+],
+
+
+"""
+Usage: prog [-v | -vv | -vvv]
+
+This one is probably most readable user-friednly variant.
+
+""": [
+  {
+    "input": "prog"
+    "expected":
+      "-v": 0
+  },
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": 1
+  },
+  {
+    "input": "prog -vv"
+    "expected":
+      "-v": 2
+  },
+  {
+    "input": "prog -vvvv"
+    "expected": "user-error"
+  }
+],
+
+
+"usage: prog [--ver --ver]": [
+  {
+    "input": "prog --ver --ver"
+    "expected":
+      "--ver": 2
+  }
+]
+
+
+# Counting commands
+"usage: prog [go]": [
+  {
+    "input": "prog go"
+    "expected":
+      "go": true
+  }
+],
+
+
+"usage: prog [go go]": [
+  {
+    "input": "prog"
+    "expected":
+      "go": 0
+  },
+  {
+    "input": "prog go"
+    "expected":
+      "go": 1
+  },
+  {
+    "input": "prog go go"
+    "expected":
+      "go": 2
+  },
+  {
+    "input": "prog go go go"
+    "expected": "user-error"
+  }
+],
+
+
+"usage: prog go...": [
+  {
+    "input": "prog go go go go go"
+    "expected":
+      "go": 5
+  }
+],
+
+
+# [options] does not include options from usage-pattern
+"""
+usage: prog [options] [-a]
+
+options: -a
+     -b
+""": [
+  {
+    "input": "prog -a"
+    "expected":
+      "-a": true
+      "-b": false 
+  },
+  {
+    "input": "prog -aa"
+    "expected": "user-error"
+  }
+],
+
+
+# Test [options] shourtcut
+"""
+Usage: prog [options] A
+Options:
+  -q  Be quiet
+  -v  Be verbose.
+""": [
+  {
+    "input": "prog arg"
+    "expected":
+      "A": "arg"
+      "-v": false
+      "-q": false 
+  },
+  {
+    "input": "prog -v arg"
+    "expected":
+      "A": "arg"
+      "-v": true
+      "-q": false 
+  },
+  {
+    "input": "prog -q arg"
+    "expected":
+      "A": "arg"
+      "-v": false
+      "-q": true 
+  }
+],
+
+
+# Test single dash
+"usage: prog [-]": [
+  {
+    "input": "prog -"
+    "expected":
+      "-": true
+  },
+  {
+    "input": "prog"
+    "expected":
+      "-": false
+  }
+],
+
+
+# If argument is repeated, its value should always be a list
+"usage: prog [NAME [NAME ...]]": [
+  {
+    # FIXME (Python)
+    "input": "prog a b"
+    "expected": 
+      "NAME": ["a", "b"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  },
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  }
+],
+
+
+# Option's argument defaults to null/None
+"""
+usage: prog [options]
+
+options:
+  -a        Add
+  -m <msg>  Message
+
+""": [
+  {
+    "input": "prog -a"
+    "expected": 
+      "-m": null
+      "-a": true 
+  }
+],
+
+
+# Test options without description
+"usage: prog --hello": [
+  {
+    "input": "prog --hello"
+    "expected":
+      "--hello": true
+  }
+],
+
+
+"usage: prog [--hello=<world>]": [
+  {
+    "input": "prog"
+    "expected":
+      "--hello": null
+  },
+  {
+    "input": "prog --hello wrld"
+    "expected":
+      "--hello": "wrld"
+  }
+],
+
+
+"usage: prog [-o]": [
+  {
+    "input": "prog"
+    "expected":
+      "-o": false
+  },
+  {
+    "input": "prog -o"
+    "expected":
+      "-o": true
+  }
+],
+
+
+"usage: prog [-opr]": [
+  {
+    "input": "prog -op"
+    "expected":
+      "-o": true
+      "-p": true
+      "-r": false
+  }
+],
+
+
+"usage: git [-v | --verbose]": [
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": true
+      "--verbose": false 
+  }
+],
+
+
+"usage: git remote [-v | --verbose]": [
+  {
+    "input": "prog remote -v"
+    "expected":
+      "remote": true
+      "-v": true
+      "--verbose": false
+  }
+],
+
+
+# Test empty usage pattern
+"usage: prog": [
+  {
+    "input": "prog"
+    "expected": {}
+  }
+],
+
+
+"""
+usage: prog
+   prog <a> <b>
+""": [
+  {
+    "input": "prog 1 2"
+    "expected":
+      "<a>": "1"
+      "<b>": "2" 
+  },
+  {
+    "input": "prog"
+    "expected":
+      "<a>": null
+      "<b>": null 
+  }
+],
+
+
+"""
+usage: prog <a> <b>
+   prog
+""": [
+  {
+    "input": "prog"
+    "expected":
+      "<a>": null
+      "<b>": null
+  }
+],
+
+
+# Option's argument should not capture default value from usage pattern
+"usage: prog [--file=<f>]": [
+  {
+    "input": "prog"
+    "expected":
+      "--file": null
+  }
+],
+
+
+"""
+usage: prog [--file=<f>]
+
+options: --file <a>
+
+""": [
+  {
+    "input": "prog"
+    "expected": 
+      "--file": null
+  }
+],
+
+
+"""
+Usage: prog [-a <host:port>]
+
+Options: -a, --address <host:port>  TCP address [default: localhost:6283].
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "--address": "localhost:6283"
+  }
+],
+
+
+# If option with argument could be repeated, arguments should accumulate into a list
+"usage: prog --long=<arg> ...": [
+  {
+    "input": "prog --long one"
+    "expected": 
+      "--long": ["one"]
+  },
+  {
+    "input": "prog --long one --long two"
+    "expected":
+      "--long": ["one", "two"]
+  }
+],
+
+
+# Test multiple elements repeated at once
+"usage: prog (go <direction> --speed=<km/h>)...": [
+  {
+    "input": "prog go left --speed=5 go right --speed=9"
+    "expected":
+      "go": 2
+      "<direction>": ["left", "right"]
+      "--speed": ["5", "9"]
+  }
+],
+
+
+# Required options should work with option shortcut
+"""
+usage: prog [options] -a
+
+options: -a
+
+""": [
+  {
+    "input": "prog -a"
+    "expected":
+      "-a": true
+  }
+]
+
+# If option could be repeated its defaults should be split into a list
+"""
+usage: prog [-o <o>]...
+
+options: -o <o>  [default: x]
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog -o this -o that"
+    "expected":
+      "-o": ["this", "that"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "-o": ["x"]
+  }
+],
+
+
+"""
+usage: prog [-o <o>]...
+
+options: -o <o>  [default: x y]
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog -o this"
+    "expected":
+      "-o": ["this"]
+  },
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "-o": ["x", "y"]
+  }
+],
+
+
+# Test stacked option's argument
+"""
+usage: prog -pPATH
+
+options: -p PATH
+
+""": [
+  {
+    "input": "prog -pHOME"
+    "expected":
+      "-p": "HOME"
+  }
+],
+
+
+#   Issue 56: 
+#       Repeated mutually exclusive args give nested lists sometimes
+"Usage: foo (--xx=x|--yy=y)...": [
+  {
+    "input": "prog --xx=1 --yy=2"
+    "expected": 
+      "--xx": ["1"]
+      "--yy": ["2"]
+  }
+],
+
+
+
+# POSIXly correct tokenization
+"usage: prog [<input file>]": [
+  {
+    "input": "prog f.txt"
+    "expected":
+      "<input file>": "f.txt"
+  }
+],
+
+
+"usage: prog [--input=<file name>]...": [
+  {
+    "input": "prog --input a.txt --input=b.txt"
+    "expected":
+      "--input": ["a.txt", "b.txt"]
+  }
+],
+
+
+# Issue 85: 
+#   `[options]` shourtcut with multiple subcommands
+"""
+usage: prog good [options]
+   prog fail [options]
+
+options: --loglevel=N
+
+""": [
+  {
+    "input": "prog fail --loglevel 5"
+    "expected":
+      "--loglevel": "5"
+      "fail": true
+      "good": false 
+  }
+],
+
+
+# Usage-section syntax
+"usage:prog --foo": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+  }
+],
+
+
+"PROGRAM USAGE: prog --foo": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+  }
+],
+
+
+"""
+Usage: prog --foo
+   prog --bar
+NOT PART OF SECTION
+""": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+      "--bar": false 
+  }
+],
+
+
+"""
+Usage:
+  prog --foo
+  prog --bar
+
+NOT PART OF SECTION
+""": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+      "--bar": false 
+  }
+],
+
+
+"""
+Usage:
+  prog --foo
+  prog --bar
+NOT PART OF SECTION
+""": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+      "--bar": false 
+  }
+],
+
+
+# Options-section syntax
+"""
+Usage: prog [options]
+
+global options:
+  --foo
+local options:
+  --baz
+  --bar
+other options:
+  --egg
+  --spam
+-not-an-option-
+
+""": [
+  {
+    "input": "prog --baz --egg"
+    "expected":
+      "--foo": false
+      "--baz": true
+      "--bar": false
+      "--egg": true
+      "--spam": false 
   }
 ]
