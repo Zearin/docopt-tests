@@ -1,10 +1,6 @@
 {
   "Usage: prog": [
     {
-      "input": "prog",
-      "expected": {}
-    },
-    {
       "input": "prog --xxx",
       "expected": "user-error"
     }
@@ -768,14 +764,6 @@
       "expected": "user-error"
     }
   ],
-  "Usage: prog -v": [
-    {
-      "input": "prog -v",
-      "expected": {
-        "-v": true
-      }
-    }
-  ],
   "Usage: prog [-v -v]": [
     {
       "input": "prog",
@@ -852,148 +840,6 @@
       }
     }
   ],
-  "usage: prog [go]": [
-    {
-      "input": "prog go",
-      "expected": {
-        "go": true
-      }
-    }
-  ],
-  "usage: prog [go go]": [
-    {
-      "input": "prog",
-      "expected": {
-        "go": 0
-      }
-    },
-    {
-      "input": "prog go",
-      "expected": {
-        "go": 1
-      }
-    },
-    {
-      "input": "prog go go",
-      "expected": {
-        "go": 2
-      }
-    },
-    {
-      "input": "prog go go go",
-      "expected": "user-error"
-    }
-  ],
-  "usage: prog go...": [
-    {
-      "input": "prog go go go go go",
-      "expected": {
-        "go": 5
-      }
-    }
-  ],
-  "usage: prog [options] [-a]\n\noptions: -a\n     -b": [
-    {
-      "input": "prog -a",
-      "expected": {
-        "-a": true,
-        "-b": false
-      }
-    },
-    {
-      "input": "prog -aa",
-      "expected": "user-error"
-    }
-  ],
-  "Usage: prog [options] A\nOptions:\n  -q  Be quiet\n  -v  Be verbose.": [
-    {
-      "input": "prog arg",
-      "expected": {
-        "A": "arg",
-        "-v": false,
-        "-q": false
-      }
-    },
-    {
-      "input": "prog -v arg",
-      "expected": {
-        "A": "arg",
-        "-v": true,
-        "-q": false
-      }
-    },
-    {
-      "input": "prog -q arg",
-      "expected": {
-        "A": "arg",
-        "-v": false,
-        "-q": true
-      }
-    }
-  ],
-  "usage: prog [-]": [
-    {
-      "input": "prog -",
-      "expected": {
-        "-": true
-      }
-    },
-    {
-      "input": "prog",
-      "expected": {
-        "-": false
-      }
-    }
-  ],
-  "usage: prog [NAME [NAME ...]]": [
-    {
-      "input": "prog a b",
-      "expected": {
-        "NAME": [
-          "a",
-          "b"
-        ]
-      }
-    },
-    {
-      "input": "prog",
-      "expected": {
-        "NAME": []
-      }
-    },
-    {
-      "input": "prog 10 20",
-      "expected": {
-        "NAME": [
-          "10",
-          "20"
-        ]
-      }
-    },
-    {
-      "input": "prog 10",
-      "expected": {
-        "NAME": [
-          "10"
-        ]
-      }
-    },
-    {
-      "input": "prog",
-      "expected": {
-        "NAME": []
-      }
-    }
-  ],
-  "usage: prog [options]\n\noptions:\n  -a        Add\n  -m <msg>  Message\n": [
-    {
-      "input": "prog -a",
-      "expected": {
-        "-m": null,
-        "-a": true
-      }
-    }
-  ],
   "usage: git [-v | --verbose]": [
     {
       "input": "prog -v",
@@ -1011,12 +857,6 @@
         "-v": true,
         "--verbose": false
       }
-    }
-  ],
-  "usage: prog": [
-    {
-      "input": "prog",
-      "expected": {}
     }
   ],
   "usage: prog\n   prog <a> <b>": [
@@ -1044,14 +884,6 @@
       }
     }
   ],
-  "usage: prog [--file=<f>]": [
-    {
-      "input": "prog",
-      "expected": {
-        "--file": null
-      }
-    }
-  ],
   "usage: prog [--file=<f>]\n\noptions: --file <a>\n": [
     {
       "input": "prog",
@@ -1065,68 +897,6 @@
       "input": "prog",
       "expected": {
         "--address": "localhost:6283"
-      }
-    }
-  ],
-  "usage: prog --long=<arg> ...": [
-    {
-      "input": "prog --long one",
-      "expected": {
-        "--long": [
-          "one"
-        ]
-      }
-    },
-    {
-      "input": "prog --long one --long two",
-      "expected": {
-        "--long": [
-          "one",
-          "two"
-        ]
-      }
-    }
-  ],
-  "usage: prog (go <direction> --speed=<km/h>)...": [
-    {
-      "input": "prog go left --speed=5 go right --speed=9",
-      "expected": {
-        "go": 2,
-        "<direction>": [
-          "left",
-          "right"
-        ],
-        "--speed": [
-          "5",
-          "9"
-        ]
-      }
-    }
-  ],
-  "usage: prog [options] -a\n\noptions: -a\n": [
-    {
-      "input": "prog -a",
-      "expected": {
-        "-a": true
-      }
-    }
-  ],
-  "usage: prog [-o <o>]...\n\noptions: -o <o>  [default: x]\n": [
-    {
-      "input": "prog -o this -o that",
-      "expected": {
-        "-o": [
-          "this",
-          "that"
-        ]
-      }
-    },
-    {
-      "input": "prog",
-      "expected": {
-        "-o": [
-          "x"
-        ]
       }
     }
   ],
@@ -1149,35 +919,6 @@
       }
     }
   ],
-  "usage: prog -pPATH\n\noptions: -p PATH\n": [
-    {
-      "input": "prog -pHOME",
-      "expected": {
-        "-p": "HOME"
-      }
-    }
-  ],
-  "Usage: foo (--xx=x|--yy=y)...": [
-    {
-      "input": "prog --xx=1 --yy=2",
-      "expected": {
-        "--xx": [
-          "1"
-        ],
-        "--yy": [
-          "2"
-        ]
-      }
-    }
-  ],
-  "usage: prog [<input file>]": [
-    {
-      "input": "prog f.txt",
-      "expected": {
-        "<input file>": "f.txt"
-      }
-    }
-  ],
   "usage: prog [--input=<file name>]...": [
     {
       "input": "prog --input a.txt --input=b.txt",
@@ -1186,71 +927,6 @@
           "a.txt",
           "b.txt"
         ]
-      }
-    }
-  ],
-  "usage: prog good [options]\n   prog fail [options]\n\noptions: --loglevel=N\n": [
-    {
-      "input": "prog fail --loglevel 5",
-      "expected": {
-        "--loglevel": "5",
-        "fail": true,
-        "good": false
-      }
-    }
-  ],
-  "usage:prog --foo": [
-    {
-      "input": "prog --foo",
-      "expected": {
-        "--foo": true
-      }
-    }
-  ],
-  "PROGRAM USAGE: prog --foo": [
-    {
-      "input": "prog --foo",
-      "expected": {
-        "--foo": true
-      }
-    }
-  ],
-  "Usage: prog --foo\n   prog --bar\nNOT PART OF SECTION": [
-    {
-      "input": "prog --foo",
-      "expected": {
-        "--foo": true,
-        "--bar": false
-      }
-    }
-  ],
-  "Usage:\n  prog --foo\n  prog --bar\n\nNOT PART OF SECTION": [
-    {
-      "input": "prog --foo",
-      "expected": {
-        "--foo": true,
-        "--bar": false
-      }
-    }
-  ],
-  "Usage:\n  prog --foo\n  prog --bar\nNOT PART OF SECTION": [
-    {
-      "input": "prog --foo",
-      "expected": {
-        "--foo": true,
-        "--bar": false
-      }
-    }
-  ],
-  "Usage: prog [options]\n\nglobal options:\n  --foo\nlocal options:\n  --baz\n  --bar\nother options:\n  --egg\n  --spam\n-not-an-option-\n": [
-    {
-      "input": "prog --baz --egg",
-      "expected": {
-        "--foo": false,
-        "--baz": true,
-        "--bar": false,
-        "--egg": true,
-        "--spam": false
       }
     }
   ]

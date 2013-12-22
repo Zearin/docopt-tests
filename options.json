@@ -1,0 +1,186 @@
+{
+  "Usage: prog [options]\n\nglobal options:\n  --foo\nlocal options:\n  --baz\n  --bar\nother options:\n  --egg\n  --spam\n-not-an-option-\n": [
+    {
+      "input": "prog --baz --egg",
+      "expected": {
+        "--foo": false,
+        "--baz": true,
+        "--bar": false,
+        "--egg": true,
+        "--spam": false
+      }
+    }
+  ],
+  "usage: prog -pPATH\n\noptions: -p PATH\n": [
+    {
+      "input": "prog -pHOME",
+      "expected": {
+        "-p": "HOME"
+      }
+    }
+  ],
+  "usage: prog [-o <o>]...\n\noptions: -o <o>  [default: x]\n": [
+    {
+      "input": "prog -o this -o that",
+      "expected": {
+        "-o": [
+          "this",
+          "that"
+        ]
+      }
+    },
+    {
+      "input": "prog",
+      "expected": {
+        "-o": [
+          "x"
+        ]
+      }
+    }
+  ],
+  "usage: prog --long=<arg> ...": [
+    {
+      "input": "prog --long one",
+      "expected": {
+        "--long": [
+          "one"
+        ]
+      }
+    },
+    {
+      "input": "prog --long one --long two",
+      "expected": {
+        "--long": [
+          "one",
+          "two"
+        ]
+      }
+    }
+  ],
+  "usage: prog [options] -a\n\noptions: -a\n": [
+    {
+      "input": "prog -a",
+      "expected": {
+        "-a": true
+      }
+    }
+  ],
+  "usage: prog [--file=<f>]": [
+    {
+      "input": "prog",
+      "expected": {
+        "--file": null
+      }
+    }
+  ],
+  "usage: prog [options]\n\noptions:\n  -a        Add\n  -m <msg>  Message\n": [
+    {
+      "input": "prog -a",
+      "expected": {
+        "-m": null,
+        "-a": true
+      }
+    }
+  ],
+  "usage: prog --hello": [
+    {
+      "input": "prog --hello",
+      "expected": {
+        "--hello": true
+      }
+    }
+  ],
+  "usage: prog [NAME [NAME ...]]": [
+    {
+      "input": "prog a b",
+      "expected": {
+        "NAME": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    {
+      "input": "prog",
+      "expected": {
+        "NAME": []
+      }
+    },
+    {
+      "input": "prog 10 20",
+      "expected": {
+        "NAME": [
+          "10",
+          "20"
+        ]
+      }
+    },
+    {
+      "input": "prog 10",
+      "expected": {
+        "NAME": [
+          "10"
+        ]
+      }
+    },
+    {
+      "input": "prog",
+      "expected": {
+        "NAME": []
+      }
+    }
+  ],
+  "Usage: prog [options] A\nOptions:\n  -q  Be quiet\n  -v  Be verbose.": [
+    {
+      "input": "prog arg",
+      "expected": {
+        "A": "arg",
+        "-v": false,
+        "-q": false
+      }
+    },
+    {
+      "input": "prog -v arg",
+      "expected": {
+        "A": "arg",
+        "-v": true,
+        "-q": false
+      }
+    },
+    {
+      "input": "prog -q arg",
+      "expected": {
+        "A": "arg",
+        "-v": false,
+        "-q": true
+      }
+    }
+  ],
+  "usage: prog [options] [-a]\n\noptions: -a\n     -b": [
+    {
+      "input": "prog -a",
+      "expected": {
+        "-a": true,
+        "-b": false
+      }
+    },
+    {
+      "input": "prog -aa",
+      "expected": "user-error"
+    }
+  ],
+  "usage: prog [-]": [
+    {
+      "input": "prog -",
+      "expected": {
+        "-": true
+      }
+    },
+    {
+      "input": "prog",
+      "expected": {
+        "-": false
+      }
+    }
+  ]
+}

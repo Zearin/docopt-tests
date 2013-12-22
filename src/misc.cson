@@ -1,0 +1,1136 @@
+###
+#   Language-agnostic tests for docopt
+###
+
+
+"Usage: prog": [
+  {
+    "input": "prog --xxx"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options: -a  All.
+
+""": [
+  {
+    "input": "prog"
+    "expected": 
+      "-a": false
+  }
+  {
+    "input": "prog -a"
+    "expected": 
+      "-a": true
+  }
+  {
+    "input": "prog -x"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+Usage: prog [options]
+  
+  Options: --all  All.
+  
+""": [
+  {
+    "input": "prog"
+    "expected": 
+      "--all": false
+  }
+  {
+    "input": "prog --all"
+    "expected": 
+      "--all": true
+  }
+  {
+    "input": "prog --xxx"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options: -v, --verbose  Verbose.
+
+""": [
+  {
+    "input": "prog --verbose"
+    "expected": 
+      "--verbose": true
+  }
+  {
+    "input": "prog --ver"
+    "expected": 
+      "--verbose": true
+  }
+  {
+    "input": "prog -v"
+    "expected": 
+      "--verbose": true
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+  Options: -p PATH
+
+""": [
+  {
+    "input": "prog -p home/"
+    "expected": 
+      "-p": "home/"
+  }
+  {
+    "input": "prog -phome/"
+    "expected": 
+      "-p": "home/"
+  }
+  {
+    "input": "prog -p"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options: --path <path>
+
+""": [
+  {
+    "input": "prog --path home/"
+    "expected": 
+      "--path": "home/"
+  }
+  {
+    "input": "prog --path=home/"
+    "expected": 
+      "--path": "home/"
+  }
+  {
+    "input": "prog --pa home/"
+    "expected": 
+      "--path": "home/"
+  }
+  {
+    "input": "prog --pa=home/"
+    "expected": 
+      "--path": "home/"
+  }
+  {
+    "input": "prog --path"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options: -p PATH, --path=<path>  Path to files.
+
+""": [
+  {
+    "input": "prog -proot"
+    "expected": 
+      "--path": "root"
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options:    -p --path PATH  Path to files.
+
+""": [
+  {
+    "input": "prog -p root"
+    "expected": 
+      "--path": "root"
+  }
+  {
+    "input": "prog --path root"
+    "expected": 
+      "--path": "root"
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options:
+ -p PATH  Path to files [default: ./]
+
+""": [
+  {
+    "input": "prog"
+    "expected": 
+      "-p": "./"
+  }
+  {
+    "input": "prog -phome"
+    "expected": 
+      "-p": "home"
+  }
+]
+
+
+"""
+UsAgE: prog [options]
+
+OpTiOnS: --path=<files>  Path to files
+            [dEfAuLt: /root]
+
+""": [
+  {
+    "input": "prog"
+    "expected": 
+      "--path": "/root"
+  }
+  {
+    "input": "prog --path=home"
+    "expected": 
+      "--path": "home"
+  }
+]
+
+
+"""
+usage: prog [options]
+
+options:
+    -a        Add
+    -r        Remote
+    -m <msg>  Message
+
+""": [
+  {
+    "input": "prog -a -r -m Hello"
+    "expected":
+      "-a": true
+      "-r": true
+      "-m": "Hello" 
+  }
+  {
+    "input": "prog -armyourass"
+    "expected":
+      "-a": true
+      "-r": true 
+      "-m": "yourass"
+  }
+  {
+    "input": "prog -a -r"
+    "expected":
+      "-a": true 
+      "-r": true
+      "-m": null 
+  }
+]
+
+
+"""
+Usage: prog [options]
+
+Options: --version
+     --verbose
+
+""": [
+  {
+    "input": "prog --version"
+    "expected":
+      "--version": true
+      "--verbose": false 
+  }
+  {
+    "input": "prog --verbose"
+    "expected": 
+      "--version": false
+      "--verbose": true 
+  }
+  {
+    "input": "prog --ver"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog --verb"
+    "expected":
+      "--version": false
+      "--verbose": true 
+  }
+]
+
+
+"""
+usage: prog [-a -r -m <msg>]
+
+options:
+ -a        Add
+ -r        Remote
+ -m <msg>  Message
+
+""": [
+  {
+    "input": "prog -armyourass"
+    "expected":
+      "-a": true
+      "-r": true
+      "-m": "yourass" 
+  }
+]
+
+
+"""
+usage: prog [-armmsg]
+
+options: -a        Add
+     -r        Remote
+     -m <msg>  Message
+
+""": [
+  {
+    "input": "prog -a -r -m Hello"
+    "expected":
+      "-a": true
+      "-r": true
+      "-m": "Hello" 
+  }
+]
+
+
+"""
+usage: prog -a -b
+
+options:
+ -a
+ -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": 
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -b -a"
+    "expected": 
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -a"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+usage: prog (-a -b)
+
+options: -a
+     -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": 
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -b -a"
+    "expected": 
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -a"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+usage: prog [-a] -b
+
+options: -a
+ -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": 
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -b -a"
+    "expected": 
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -a"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog -b"
+    "expected":  
+      "-a": false
+      "-b": true 
+    
+  }
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+usage: prog [(-a -b)]
+
+options: -a
+     -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected":
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -b -a"
+    "expected":
+      "-a": true
+      "-b": true 
+  }
+  {
+    "input": "prog -a"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog -b"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected":
+      "-a": false
+      "-b": false 
+  }
+]
+
+
+"""
+usage: prog (-a|-b)
+
+options: -a
+     -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog -a"
+    "expected":
+      "-a": true
+      "-b": false
+  }
+  {
+    "input": "prog -b"
+    "expected":
+      "-a": false
+      "-b": true
+  }
+]
+
+
+"""
+usage: prog [ -a | -b ]
+
+options: -a
+     -b
+
+""": [
+  {
+    "input": "prog -a -b"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected":
+      "-a": false
+      "-b": false 
+  }
+  {
+    "input": "prog -a"
+    "expected":
+      "-a": true
+      "-b": false 
+  }
+  {
+    "input": "prog -b"
+    "expected":
+      "-a": false
+      "-b": true 
+  }
+]
+
+
+"usage: prog <arg>": [
+  {
+    "input": "prog 10"
+    "expected": 
+      "<arg>": "10"
+  }
+  {
+    "input": "prog 10 20"
+    "expected": "user-error"
+  }
+  {
+    # FIXME (Python returns {'<arg>': 'prog'})
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"usage: prog [<arg>]": [
+  {
+    "input": "prog 10"
+    "expected": 
+      "<arg>": "10"
+  }
+  {
+    "input": "prog 10 20"
+    "expected": "user-error"
+  }
+  {
+    # FIXME (Python returns {'<arg>': 'prog'})
+    "input": "prog"
+    "expected": 
+      "<arg>": null
+  }
+]
+
+
+"usage: prog <kind> <name> <type>": [
+  {
+    "input": "prog 10 20 40"
+    "expected":
+      "<kind>": "10"
+      "<name>": "20"
+      "<type>": "40"
+  }
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"usage: prog <kind> [<name> <type>]": [
+  {
+    "input": "prog 10 20 40"
+    "expected":
+      "<kind>": "10"
+      "<name>": "20"
+      "<type>": "40"
+  }
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected":
+      "<kind>": "10"
+      "<name>": "20"
+      "<type>": null
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"usage: prog [<kind> | <name> <type>]": [
+  {
+    "input": "prog 10 20 40"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog 20 40"
+    "expected":
+      "<kind>": null
+      "<name>": "20"
+      "<type>": "40"
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "<kind>": null
+      "<name>": null
+      "<type>": null
+  }
+]
+
+
+"""
+usage: prog (<kind> --all | <name>)
+
+options:
+ --all
+
+""": [
+  {
+    "input": "prog 10 --all"
+    "expected":
+      "<kind>": "10"
+      "--all": true
+      "<name>":null 
+  }
+  {
+    "input": "prog 10"
+    "expected":
+      "<kind>": null
+      "--all": false
+      "<name>":"10" 
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"usage: prog [<name> <name>]": [
+  {
+    "input": "prog 10 20"
+    "expected":
+      "<name>": ["10", "20"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected":
+      "<name>": ["10"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "<name>": []
+  }
+]
+
+
+"usage: prog [(<name> <name>)]": [
+  {
+    "input": "prog 10 20"
+    "expected": 
+      "<name>": ["10", "20"]
+  }
+  {
+    # FIXME: (Python)
+    "input": "prog 10"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog"
+    "expected":
+      "<name>": []
+  }
+]
+
+
+"usage: prog NAME...": [
+  {
+    # FIXME: (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  }
+  {
+    # FIXME: (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": "user-error"
+  }
+]
+
+
+"usage: prog [NAME]...": [
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  }
+]
+
+
+"usage: prog [NAME...]": [
+  {
+    # FIXME (Python)
+    "input": "prog 10 20"
+    "expected": 
+      "NAME": ["10", "20"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected": 
+      "NAME": ["10"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected": 
+      "NAME": []
+  }
+]
+
+
+"""
+usage: prog (NAME | --foo NAME)
+
+options: --foo
+
+""": [
+  {
+    "input": "prog 10"
+    "expected": 
+      "NAME": "10"
+      "--foo": false
+  }
+  {
+    "input": "prog --foo 10"
+    "expected": 
+      "NAME": "10"
+      "--foo": true
+  }
+  {
+    "input": "prog --foo=10"
+    "expected": "user-error"
+  }
+]
+
+
+"""
+usage: prog (NAME | --foo) [--bar | NAME]
+
+options: --foo
+options: --bar
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog 10"
+    "expected":
+      "NAME": ["10"]
+      "--foo": false
+      "--bar": false
+  }
+  {
+    "input": "prog 10 20"
+    "expected":
+      "NAME": ["10", "20"]
+      "--foo": false
+      "--bar": false
+  }
+  {
+    "input": "prog --foo --bar"
+    "expected":
+      "NAME": []
+      "--foo": true
+      "--bar": true
+  }
+]
+
+
+"""
+Naval Fate.
+
+Usage:
+  prog ship new <name>...
+  prog ship [<name>] move <x> <y> [--speed=<kn>]
+  prog ship shoot <x> <y>
+  prog mine (set|remove) <x> <y> [--moored|--drifting]
+  prog -h | --help
+  prog --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  --speed=<kn>  Speed in knots [default: 10].
+  --moored      Mored (anchored) mine.
+  --drifting    Drifting mine.
+
+""": [
+  {
+    "input": "prog ship Guardian move 150 300 --speed=20"
+    "expected":
+      "--drifting": false
+      "--help": false
+      "--moored":false
+      "--speed": "20"
+      "--version": false
+      "<name>":["Guardian"]
+      "<x>": "150"
+      "<y>": "300"
+      "mine":false
+      "move": true
+      "new": false
+      "remove": false
+      "set": false
+      "ship": true
+      "shoot": false
+  }
+]
+
+
+"usage: prog --hello": [
+  {
+    "input": "prog --hello"
+    "expected":
+      "--hello": true
+  }
+]
+
+
+"usage: prog [--hello=<world>]": [
+  {
+    "input": "prog"
+    "expected":
+      "--hello": null
+  }
+  {
+    "input": "prog --hello wrld"
+    "expected":
+      "--hello": "wrld"
+  }
+]
+
+
+"usage: prog [-o]": [
+  {
+    "input": "prog"
+    "expected":
+      "-o": false
+  }
+  {
+    "input": "prog -o"
+    "expected":
+      "-o": true
+  }
+]
+
+
+"usage: prog [-opr]": [
+  {
+    "input": "prog -op"
+    "expected":
+      "-o": true
+      "-p": true
+      "-r": false 
+  }
+]
+
+
+"usage: prog --aabb | --aa": [
+  {
+    "input": "prog --aa"
+    "expected":
+      "--aabb": false
+      "--aa": true 
+  }
+  {
+    "input": "prog --a"
+    "expected": "user-error"
+  }
+]
+
+
+"Usage: prog [-v -v]": [
+  {
+    "input": "prog"
+    "expected":
+      "-v": 0
+  }
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": 1
+  }
+  {
+    "input": "prog -vv"
+    "expected":
+      "-v": 2
+  }
+]
+
+
+"Usage: prog -v ...": [
+  {
+    "input": "prog"
+    "expected": "user-error"
+  }
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": 1
+  }
+  {
+    "input": "prog -vv"
+    "expected":
+      "-v": 2
+  }
+  {
+    "input": "prog -vvvvvv"
+    "expected":
+      "-v": 6
+  }
+]
+
+
+"""
+Usage: prog [-v | -vv | -vvv]
+
+This one is probably most readable user-friednly variant.
+
+""": [
+  {
+    "input": "prog"
+    "expected":
+      "-v": 0
+  }
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": 1
+  }
+  {
+    "input": "prog -vv"
+    "expected":
+      "-v": 2
+  }
+  {
+    "input": "prog -vvvv"
+    "expected": "user-error"
+  }
+]
+
+
+"usage: prog [--ver --ver]": [
+  {
+    "input": "prog --ver --ver"
+    "expected":
+      "--ver": 2
+  }
+]
+
+
+"usage: prog [--hello=<world>]": [
+  {
+    "input": "prog"
+    "expected":
+      "--hello": null
+  }
+  {
+    "input": "prog --hello wrld"
+    "expected":
+      "--hello": "wrld"
+  }
+]
+
+
+"usage: prog [-o]": [
+  {
+    "input": "prog"
+    "expected":
+      "-o": false
+  }
+  {
+    "input": "prog -o"
+    "expected":
+      "-o": true
+  }
+]
+
+
+"usage: prog [-opr]": [
+  {
+    "input": "prog -op"
+    "expected":
+      "-o": true
+      "-p": true
+      "-r": false
+  }
+]
+
+
+"usage: git [-v | --verbose]": [
+  {
+    "input": "prog -v"
+    "expected":
+      "-v": true
+      "--verbose": false 
+  }
+]
+
+
+"usage: git remote [-v | --verbose]": [
+  {
+    "input": "prog remote -v"
+    "expected":
+      "remote": true
+      "-v": true
+      "--verbose": false
+  }
+]
+
+
+"""
+usage: prog
+   prog <a> <b>
+""": [
+  {
+    "input": "prog 1 2"
+    "expected":
+      "<a>": "1"
+      "<b>": "2" 
+  }
+  {
+    "input": "prog"
+    "expected":
+      "<a>": null
+      "<b>": null 
+  }
+]
+
+
+"""
+usage: prog <a> <b>
+   prog
+""": [
+  {
+    "input": "prog"
+    "expected":
+      "<a>": null
+      "<b>": null
+  }
+]
+
+
+"""
+usage: prog [--file=<f>]
+
+options: --file <a>
+
+""": [
+  {
+    "input": "prog"
+    "expected": 
+      "--file": null
+  }
+]
+
+
+"""
+Usage: prog [-a <host:port>]
+
+Options: -a, --address <host:port>  TCP address [default: localhost:6283].
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "--address": "localhost:6283"
+  }
+]
+
+
+"""
+usage: prog [-o <o>]...
+
+options: -o <o>  [default: x y]
+
+""": [
+  {
+    # FIXME (Python)
+    "input": "prog -o this"
+    "expected":
+      "-o": ["this"]
+  }
+  {
+    # FIXME (Python)
+    "input": "prog"
+    "expected":
+      "-o": ["x", "y"]
+  }
+]
+
+
+"usage: prog [--input=<file name>]...": [
+  {
+    "input": "prog --input a.txt --input=b.txt"
+    "expected":
+      "--input": ["a.txt", "b.txt"]
+  }
+]

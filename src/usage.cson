@@ -1,0 +1,76 @@
+###
+#   Language-agnostic tests for docopt
+###
+
+
+# Usage-section syntax
+"usage:prog --foo": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+  }
+]
+
+
+"PROGRAM USAGE: prog --foo": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+  }
+]
+
+
+"""
+Usage: prog --foo
+   prog --bar
+NOT PART OF SECTION
+""": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+      "--bar": false 
+  }
+]
+
+
+"""
+Usage:
+  prog --foo
+  prog --bar
+
+NOT PART OF SECTION
+""": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+      "--bar": false 
+  }
+]
+
+
+"""
+Usage:
+  prog --foo
+  prog --bar
+NOT PART OF SECTION
+""": [
+  {
+    "input": "prog --foo"
+    "expected":
+      "--foo": true
+      "--bar": false 
+  }
+]
+
+
+# empty usage pattern
+"usage: prog": [
+  {
+    "input": "prog"
+    "expected": {}
+  }
+]
