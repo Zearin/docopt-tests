@@ -64,7 +64,7 @@ atexit.register(show_failed_usages)
 class DocoptJSON(Vows.Context):
     def topic(self):
         JSON_DATA = None
-        with io.open('test.json', encoding='UTF-8') as f:
+        with io.open('all_tests.json', encoding='UTF-8') as f:
             JSON_DATA = json.loads(f.read(), object_hook=_decode_dict)
         for doc, tests in JSON_DATA.items():
             yield doc, tests
