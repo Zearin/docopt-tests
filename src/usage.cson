@@ -3,6 +3,14 @@
 ###
 
 
+# empty usage pattern
+"usage: prog": [
+  {
+    "input": "prog"
+    "expected": {}
+  }
+]
+
 # Usage-section syntax
 "usage:prog --foo": [
   {
@@ -63,14 +71,5 @@ NOT PART OF SECTION
     "expected":
       "--foo": true
       "--bar": false 
-  }
-]
-
-
-# empty usage pattern
-"usage: prog": [
-  {
-    "input": "prog"
-    "expected": {}
   }
 ]
