@@ -1,34 +1,38 @@
-###
-#   Language-agnostic tests for docopt
-###
+# -*- coding: utf-8 -*-
+
+"Issues":
+  "__desc":
+    """
+    In order for Docopt
+    As a command line interpreter
+    I want it to pass these issues
+    """
+
+  # Scenarios
+  "Issue 56: Repeated mutually exclusive args give nested lists sometimes":
+    "Usage: foo (--xx=x|--yy=y)...": [
+      {
+        "input": "prog --xx=1 --yy=2"
+        "expected":
+          "--xx": ["1"]
+          "--yy": ["2"]
+      }
+    ]
 
 
-#   Issue 56: 
-#       Repeated mutually exclusive args give nested lists sometimes
-"Usage: foo (--xx=x|--yy=y)...": [
-  {
-    "input": "prog --xx=1 --yy=2"
-    "expected": 
-      "--xx": ["1"]
-      "--yy": ["2"]
-  }
-]
+  "Issue 85: `[options]` shourtcut with multiple subcommands":
+    """
+    usage: prog good [options]
+       prog fail [options]
 
+    options: --loglevel=N
 
-# Issue 85: 
-#   `[options]` shourtcut with multiple subcommands
-"""
-usage: prog good [options]
-   prog fail [options]
-
-options: --loglevel=N
-
-""": [
-  {
-    "input": "prog fail --loglevel 5"
-    "expected":
-      "--loglevel": "5"
-      "fail": true
-      "good": false 
-  }
-]
+    """: [
+      {
+        "input": "prog fail --loglevel 5"
+        "expected":
+          "--loglevel": "5"
+          "fail": true
+          "good": false
+      }
+    ]

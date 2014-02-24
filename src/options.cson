@@ -1,236 +1,242 @@
-###
-#   Language-agnostic tests for docopt
-###
+# -*- coding: utf-8 -*-
+
+"Options":
+  "__desc":
+    """
+    In order for Docopt
+    As a command line interpreter
+    I want it to be able to handle options, options, and more options
+    """
+
+  # Scenarios
+  "Options-section syntax":
+    """
+    Usage: prog [options]
+
+    global options:
+      --foo
+    local options:
+      --baz
+      --bar
+    other options:
+      --egg
+      --spam
+    -not-an-option-
+
+    """: [
+      {
+        "input": "prog --baz --egg"
+        "expected":
+          "--foo": false
+          "--baz": true
+          "--bar": false
+          "--egg": true
+          "--spam": false
+      }
+    ]
 
 
-# Options-section syntax
-"""
-Usage: prog [options]
+  "Test stacked option's argument":
+    """
+    usage: prog -pPATH
 
-global options:
-  --foo
-local options:
-  --baz
-  --bar
-other options:
-  --egg
-  --spam
--not-an-option-
+    options: -p PATH
 
-""": [
-  {
-    "input": "prog --baz --egg"
-    "expected":
-      "--foo": false
-      "--baz": true
-      "--bar": false
-      "--egg": true
-      "--spam": false 
-  }
-]
+    """: [
+      {
+        "input": "prog -pHOME"
+        "expected":
+          "-p": "HOME"
+      }
+    ]
 
 
-# Test stacked option's argument
-"""
-usage: prog -pPATH
+  "If option could be repeated its defaults should be split into a list":
+    """
+    usage: prog [-o <o>]...
 
-options: -p PATH
+    options: -o <o>  [default: x]
 
-""": [
-  {
-    "input": "prog -pHOME"
-    "expected":
-      "-p": "HOME"
-  }
-]
-
-
-# If option could be repeated its defaults should be split into a list
-"""
-usage: prog [-o <o>]...
-
-options: -o <o>  [default: x]
-
-""": [
-  {
-    # FIXME (Python)
-    "input": "prog -o this -o that"
-    "expected":
-      "-o": ["this", "that"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected":
-      "-o": ["x"]
-  }
-]
+    """: [
+      {
+        # FIXME (Python)
+        "input": "prog -o this -o that"
+        "expected":
+          "-o": ["this", "that"]
+      }
+      {
+        # FIXME (Python)
+        "input": "prog"
+        "expected":
+          "-o": ["x"]
+      }
+    ]
 
 
-# If option with argument could be repeated, arguments should accumulate into a list
-"usage: prog --long=<arg> ...": [
-  {
-    "input": "prog --long one"
-    "expected": 
-      "--long": ["one"]
-  }
-  {
-    "input": "prog --long one --long two"
-    "expected":
-      "--long": ["one", "two"]
-  }
-]
+  "If option with argument could be repeated, arguments should accumulate into a list":
+    "usage: prog --long=<arg> ...": [
+      {
+        "input": "prog --long one"
+        "expected":
+          "--long": ["one"]
+      }
+      {
+        "input": "prog --long one --long two"
+        "expected":
+          "--long": ["one", "two"]
+      }
+    ]
 
 
-# Required options should work with option shortcut
-"""
-usage: prog [options] -a
+  "Required options should work with option shortcut":
+    """
+    usage: prog [options] -a
 
-options: -a
+    options: -a
 
-""": [
-  {
-    "input": "prog -a"
-    "expected":
-      "-a": true
-  }
-]
-
-
-# Option's argument should not capture default value from usage pattern
-"usage: prog [--file=<f>]": [
-  {
-    "input": "prog"
-    "expected":
-      "--file": null
-  }
-]
+    """: [
+      {
+        "input": "prog -a"
+        "expected":
+          "-a": true
+      }
+    ]
 
 
-# Option's argument defaults to null/None
-"""
-usage: prog [options]
-
-options:
-  -a        Add
-  -m <msg>  Message
-
-""": [
-  {
-    "input": "prog -a"
-    "expected": 
-      "-m": null
-      "-a": true 
-  }
-]
+  "Option's argument should not capture default value from usage pattern":
+    "usage: prog [--file=<f>]": [
+      {
+        "input": "prog"
+        "expected":
+          "--file": null
+      }
+    ]
 
 
-# Test options without description
-"usage: prog --hello": [
-  {
-    "input": "prog --hello"
-    "expected":
-      "--hello": true
-  }
-]
+  "Option's argument defaults to null/None":
+    """
+    usage: prog [options]
+
+    options:
+      -a        Add
+      -m <msg>  Message
+
+    """: [
+      {
+        "input": "prog -a"
+        "expected":
+          "-m": null
+          "-a": true
+      }
+    ]
 
 
-# If argument is repeated, its value should always be a list
-"usage: prog [NAME [NAME ...]]": [
-  {
-    # FIXME (Python)
-    "input": "prog a b"
-    "expected": 
-      "NAME": ["a", "b"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected": 
-      "NAME": []
-  }
-  {
-    # FIXME (Python)
-    "input": "prog 10 20"
-    "expected": 
-      "NAME": ["10", "20"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog 10"
-    "expected": 
-      "NAME": ["10"]
-  }
-  {
-    # FIXME (Python)
-    "input": "prog"
-    "expected": 
-      "NAME": []
-  }
-]
+  "Test options without description":
+    "usage: prog --hello": [
+      {
+        "input": "prog --hello"
+        "expected":
+          "--hello": true
+      }
+    ]
 
 
-# [options] shortcut
-"""
-Usage: prog [options] A
-Options:
-  -q  Be quiet
-  -v  Be verbose.
-""": [
-  {
-    "input": "prog arg"
-    "expected":
-      "A": "arg"
-      "-v": false
-      "-q": false 
-  }
-  {
-    "input": "prog -v arg"
-    "expected":
-      "A": "arg"
-      "-v": true
-      "-q": false 
-  }
-  {
-    "input": "prog -q arg"
-    "expected":
-      "A": "arg"
-      "-v": false
-      "-q": true 
-  }
-]
+  "If argument is repeated, its value should always be a list":
+    "usage: prog [NAME [NAME ...]]": [
+      {
+        # FIXME (Python)
+        "input": "prog a b"
+        "expected":
+          "NAME": ["a", "b"]
+      }
+      {
+        # FIXME (Python)
+        "input": "prog"
+        "expected":
+          "NAME": []
+      }
+      {
+        # FIXME (Python)
+        "input": "prog 10 20"
+        "expected":
+          "NAME": ["10", "20"]
+      }
+      {
+        # FIXME (Python)
+        "input": "prog 10"
+        "expected":
+          "NAME": ["10"]
+      }
+      {
+        # FIXME (Python)
+        "input": "prog"
+        "expected":
+          "NAME": []
+      }
+    ]
 
 
-# [options] does not include options from usage-pattern
-"""
-usage: prog [options] [-a]
+  "The [options] shortcut":
+    """
+    Usage: prog [options] A
+    Options:
+      -q  Be quiet
+      -v  Be verbose.
+    """: [
+      {
+        "input": "prog arg"
+        "expected":
+          "A": "arg"
+          "-v": false
+          "-q": false
+      }
+      {
+        "input": "prog -v arg"
+        "expected":
+          "A": "arg"
+          "-v": true
+          "-q": false
+      }
+      {
+        "input": "prog -q arg"
+        "expected":
+          "A": "arg"
+          "-v": false
+          "-q": true
+      }
+    ]
 
-options: -a
-     -b
-""": [
-  {
-    "input": "prog -a"
-    "expected":
-      "-a": true
-      "-b": false 
-  }
-  {
-    "input": "prog -aa"
-    "expected": "user-error"
-  }
-]
+
+  "[options] does not include options from usage-pattern":
+    """
+    usage: prog [options] [-a]
+
+    options: -a
+         -b
+    """: [
+      {
+        "input": "prog -a"
+        "expected":
+          "-a": true
+          "-b": false
+      }
+      {
+        "input": "prog -aa"
+        "expected": "user-error"
+      }
+    ]
 
 
-# Test single dash
-"usage: prog [-]": [
-  {
-    "input": "prog -"
-    "expected":
-      "-": true
-  }
-  {
-    "input": "prog"
-    "expected":
-      "-": false
-  }
-]
+  "Test single dash":
+    "usage: prog [-]": [
+      {
+        "input": "prog -"
+        "expected":
+          "-": true
+      }
+      {
+        "input": "prog"
+        "expected":
+          "-": false
+      }
+    ]
