@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Zearin/docopt-tests",
   "dependencies": {
-    "cson": "~1.4.5"
+    "cson": "~1.4.5",
+    "underscore": "^1.6.0"
   }
 }
