@@ -20,7 +20,7 @@
     ]
 
 
-  "Issue 85: `[options]` shourtcut with multiple subcommands":
+  "Issue 85: `[options]` shortcut with multiple subcommands":
     """
     usage: prog good [options]
        prog fail [options]
