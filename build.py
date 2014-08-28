@@ -9,7 +9,6 @@ from __future__ import print_function
 # External
 from path import path
 
-
 #--------------------------------------------------------------------------------
 
 SRCDIR   = 'src'
@@ -20,51 +19,48 @@ CMD = CMD.format(BUILDDIR=BUILDDIR, SRCDIR=SRCDIR)
 
 #--------------------------------------------------------------------------------
 
-
-def clean_lines(lines):
-    '''Removes JSON-invalid cruft from the lines.'''
-    
-    lines[0]  = lines[0].replace('('  , '')
-    lines[-3] = lines[-3].replace(');', '')
-    lines     = lines[:-2]
-    return lines
-
-
-def process_js(file):
+def process_file(file):
     file = path(file)
     
     # Cleanup
     lines = file.lines()
-    lines = clean_lines(lines)
+    
+    if file.ext == '.js':
+        lines[0]  = lines[0].replace('('  , '')
+        lines[-3] = lines[-3].replace(');', '')
+        lines     = lines[:-2]
+    
+    elif file.ext == '.map':
+        lines[2] = lines[2].replace('.js"', '.json"')
+    
+    else:
+        raise TypeError('UNEXPECTED FILE EXTENSION: ' + file.ext)
+        
     file.write_lines(lines)
     
     # Rename the file
-    namebase = file.namebase
-    newname = path.joinpath(BUILDDIR, namebase + '.json')
-    file.rename(newname)
-
-
-def process_map(file):
-    file = path(file)
-    
-    # Point map to the new file
-    lines = file.lines()
-    lines[2] = lines[2].replace('.js"', '.json"')
-    file.write_lines(lines)
-    
-    # Rename the file
-    newname = path.joinpath(BUILDDIR, file.basename().replace('.js.map', '.json.map'))
+    newname = path.joinpath(BUILDDIR, file.basename().replace('.js', '.json'))
     file.rename(newname)
     
 #--------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     import subprocess
+    import sys
+        
+    try:
+        # Convert *.cson to *.js
+        subprocess.check_call(CMD, shell=True)
     
-    subprocess.check_call(CMD, shell=True)
+        # Convert *.js to *.json
+        for file in path(BUILDDIR).files('*.js'):
+            process_file(file)
     
-    for file in path(BUILDDIR).files('*.js'):
-        process_js(file)
+        # Convert *.js.map to *.json.map
+        for file in path(BUILDDIR).files('*.js.map'):
+            process_file(file)
     
-    for file in path(BUILDDIR).files('*.js.map'):
-        process_map(file)
+    except Exception as e:
+        sys.exit(e)
+    
+    sys.exit(0)
