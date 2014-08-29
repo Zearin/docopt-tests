@@ -17,8 +17,8 @@ indent_style = space
 indent_size = 4
 
 
-# CSON (CoffeeScript Object Notation): 2 space indentation
-[*.cson]
+# 2 space indentation
+[*.cson,*.json,*.map]
 indent_style = space
 indent_size = 2
 
