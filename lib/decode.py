@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
+'''Helper for the ``json`` module. Can be used with the ``object_hook`` arguments to 
+force the Python representation of JSON to use `str` objects instead of `unicode`.
 
-# http://stackoverflow.com/a/6633651/180290
+Adapted from:
+    http://stackoverflow.com/a/6633651/180290
+
+'''
+
+from collections import OrderedDict
 
 def decode_list(data):
     rv = []
