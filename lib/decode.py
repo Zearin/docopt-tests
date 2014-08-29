@@ -21,8 +21,11 @@ def decode_list(data):
         rv.append(item)
     return rv
 
-def decode_dict(data):
-    rv = {}
+def decode_dict(data, ordered_dict=False):
+    if ordered_dict:
+        rv = OrderedDict()
+    else:
+        rv = {}
     for key, value in data.iteritems():
         if isinstance(key, unicode):
             key = key.encode('utf-8')
@@ -34,3 +37,6 @@ def decode_dict(data):
             value = decode_dict(value)
         rv[key] = value
     return rv
+
+def decode_ordered_dict(data):
+    return decode_dict(data, ordered_dict=True)
