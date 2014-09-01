@@ -1,67 +1,72 @@
-###
-#   Language-agnostic tests for docopt
-###
+# -*- coding: utf-8 -*-
+
+"Counting":
+  "__desc":
+    """
+    In order for Docopt
+    As a command line interpreter
+    I want it to be able to properly count options and arguments
+    """
+
+  # Scenarios
+  "Counting number of flags":
+    "Usage: prog -v": [
+      {
+        "input": "prog -v"
+        "expected":
+          "-v": true
+      }
+    ]
 
 
-#   Counting number of flags
-"Usage: prog -v": [
-  {
-    "input": "prog -v"
-    "expected":
-      "-v": true
-  }
-]
+  "Counting commands":
+    "usage: prog [go]": [
+      {
+        "input": "prog go"
+        "expected":
+          "go": true
+      }
+    ]
 
 
-# Counting commands
-"usage: prog [go]": [
-  {
-    "input": "prog go"
-    "expected":
-      "go": true
-  }
-]
+    "usage: prog [go go]": [
+      {
+        "input": "prog"
+        "expected":
+          "go": 0
+      }
+      {
+        "input": "prog go"
+        "expected":
+          "go": 1
+      }
+      {
+        "input": "prog go go"
+        "expected":
+          "go": 2
+      }
+      {
+        "input": "prog go go go"
+        "expected": "user-error"
+      }
+    ]
 
 
-"usage: prog [go go]": [
-  {
-    "input": "prog"
-    "expected":
-      "go": 0
-  }
-  {
-    "input": "prog go"
-    "expected":
-      "go": 1
-  }
-  {
-    "input": "prog go go"
-    "expected":
-      "go": 2
-  }
-  {
-    "input": "prog go go go"
-    "expected": "user-error"
-  }
-]
+    "usage: prog go...": [
+      {
+        "input": "prog go go go go go"
+        "expected":
+          "go": 5
+      }
+    ]
 
-
-"usage: prog go...": [
-  {
-    "input": "prog go go go go go"
-    "expected":
-      "go": 5
-  }
-]
-
-
-# Test multiple elements repeated at once
-"usage: prog (go <direction> --speed=<km/h>)...": [
-  {
-    "input": "prog go left --speed=5 go right --speed=9"
-    "expected":
-      "go": 2
-      "<direction>": ["left", "right"]
-      "--speed": ["5", "9"]
-  }
-]
+  "Test multiple elements repeated at once":
+    "usage: prog (go <direction> --speed=<km/h>)...": [
+      {
+        "input": "prog go left --speed=5 go right --speed=9"
+        "expected":
+          "go": 2
+          "<direction>": ["left", "right"]
+          "--speed": ["5", "9"]
+      }
+    ]

@@ -1,75 +1,82 @@
-###
-#   Language-agnostic tests for docopt
-###
+# -*- coding: utf-8 -*-
+
+"Usage":
+  "__desc":
+    """
+    In order for Docopt
+    As a command line interpreter
+    I want it to understand "usage" documentation
+    """
 
 
-# empty usage pattern
-"usage: prog": [
-  {
-    "input": "prog"
-    "expected": {}
-  }
-]
+  # Scenarios
+  "empty usage pattern":
+    "usage: prog": [
+      {
+        "input": "prog"
+        "expected": {}
+      }
+    ]
 
-# Usage-section syntax
-"usage:prog --foo": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-  }
-]
-
-
-"PROGRAM USAGE: prog --foo": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-  }
-]
+  "Usage-section syntax":
+    "usage:prog --foo": [
+      {
+        "input": "prog --foo"
+        "expected":
+          "--foo": true
+      }
+    ]
 
 
-"""
-Usage: prog --foo
-   prog --bar
-NOT PART OF SECTION
-""": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-      "--bar": false 
-  }
-]
+    "PROGRAM USAGE: prog --foo": [
+      {
+        "input": "prog --foo"
+        "expected":
+          "--foo": true
+      }
+    ]
 
 
-"""
-Usage:
-  prog --foo
-  prog --bar
-
-NOT PART OF SECTION
-""": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-      "--bar": false 
-  }
-]
+    """
+    Usage: prog --foo
+       prog --bar
+    NOT PART OF SECTION
+    """: [
+      {
+        "input": "prog --foo"
+        "expected":
+          "--foo": true
+          "--bar": false
+      }
+    ]
 
 
-"""
-Usage:
-  prog --foo
-  prog --bar
-NOT PART OF SECTION
-""": [
-  {
-    "input": "prog --foo"
-    "expected":
-      "--foo": true
-      "--bar": false 
-  }
-]
+    """
+    Usage:
+      prog --foo
+      prog --bar
+
+    NOT PART OF SECTION
+    """: [
+      {
+        "input": "prog --foo"
+        "expected":
+          "--foo": true
+          "--bar": false
+      }
+    ]
+
+
+    """
+    Usage:
+      prog --foo
+      prog --bar
+    NOT PART OF SECTION
+    """: [
+      {
+        "input": "prog --foo"
+        "expected":
+          "--foo": true
+          "--bar": false
+      }
+    ]
