@@ -26,9 +26,10 @@ from docopt import (docopt, DocoptExit, DocoptLanguageError)
 
 FAILURES = []
 
-SRCDIR   = 'src'
-BUILDDIR = 'build'
-INDENT   = '  '
+SRCDIR      = 'src'
+BUILDDIR    = 'build'
+INDENT      = '  '
+TESTFILES   = path(BUILDDIR).files('*.json')
 
 log = logging.getLogger('docopt_tests')
 log.setLevel(logging.WARN)
@@ -106,38 +107,7 @@ def _scrape_srcmap_stdout(srcmap_out):
 
 #-------------------------------------------------------------------------------
 
-
-
-
-# JSON File
-for testfile in path( BUILDDIR ).files('*.json'):
-    
-    log.debug('='*80)
-    log.debug('%s', testfile.relpath())
-    log.debug('='*80)
-    
-    # First, index the important keys
-    #
-    # (necessary because there's no way to tell the result of `json.loads()`:
-    #  "give me the line number for this key")
-    #
-    lines     = testfile.lines(encoding='UTF-8')
-    indeces   = lib.json.get_line_indeces(lines, indent=INDENT)
-    
-    log.debug('\t%d Features',  len(indeces['features']))
-    log.debug('\t%d Scenarios', len(indeces['scenarios']))
-    log.debug('\t%d Usages',    len(indeces['usages']))
-    
-    # Deserialize JSON
-    contents  = testfile.text(encoding='UTF-8')
-    json_data = json.loads(
-        contents, 
-        object_hook=lib.json.decode.decode_dict, 
-        encoding   ='UTF-8', 
-        strict     =False
-        )
-    
-    
+def process_json(json_obj, indeces):
     # FEATURES
     for feature_name, feature in json_data.items():
         #error_in_feature = False
@@ -222,6 +192,38 @@ for testfile in path( BUILDDIR ).files('*.json'):
                         #_handle_failed_test(fail_data)
     
     log.debug('%s: DONE\n', testfile.relpath())
+
+#-------------------------------------------------------------------------------
+# JSON File
+for testfile in TESTFILES:
+    
+    log.debug('='*80)
+    log.debug('%s', testfile.relpath())
+    log.debug('='*80)
+    
+    # First, index the important keys
+    #
+    # (necessary because there's no way to tell the result of `json.loads()`:
+    #  "give me the line number for this key")
+    #
+    lines     = testfile.lines(encoding='UTF-8')
+    indeces   = lib.json.get_line_indeces(lines, indent=INDENT)
+    
+    log.debug('\t%d Features',  len(indeces['features']))
+    log.debug('\t%d Scenarios', len(indeces['scenarios']))
+    log.debug('\t%d Usages',    len(indeces['usages']))
+    
+    # Deserialize JSON
+    contents  = testfile.text(encoding='UTF-8')
+    json_data = json.loads(
+        contents, 
+        object_hook=lib.json.decode.decode_dict, 
+        encoding   ='UTF-8', 
+        strict     =False
+        )
+    
+    process_json(json_data, indeces)
+    
 
 
 # Report the test results
