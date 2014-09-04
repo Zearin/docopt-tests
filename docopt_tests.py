@@ -107,6 +107,8 @@ def _scrape_srcmap_stdout(srcmap_out):
 #-------------------------------------------------------------------------------
 
 
+
+
 # JSON File
 for testfile in path( BUILDDIR ).files('*.json'):
     
@@ -120,17 +122,11 @@ for testfile in path( BUILDDIR ).files('*.json'):
     #  "give me the line number for this key")
     #
     lines     = testfile.lines(encoding='UTF-8')
+    indeces   = lib.json.get_line_indeces(lines, indent=INDENT)
     
-    key_indeces      = lib.json.index_keys(lines)
-    feature_indeces  = [i for i in key_indeces if i[1].startswith(1*INDENT + '"') ]
-    scenario_indeces = [i for i in key_indeces if i[1].startswith(2*INDENT + '"')
-                                              and '__desc' not in i[1]            ]
-    usage_indeces    = [i for i in key_indeces if i[1].startswith(3*INDENT + '"') ]
-    test_indeces     = [i for i in key_indeces if i[1].startswith(5*INDENT + '"input":') ]
-    
-    log.debug('\t%d Features',  len(feature_indeces))
-    log.debug('\t%d Scenarios', len(scenario_indeces))
-    log.debug('\t%d Usages',    len(usage_indeces))
+    log.debug('\t%d Features',  len(indeces['features']))
+    log.debug('\t%d Scenarios', len(indeces['scenarios']))
+    log.debug('\t%d Usages',    len(indeces['usages']))
     
     # Deserialize JSON
     contents  = testfile.text(encoding='UTF-8')
@@ -156,7 +152,7 @@ for testfile in path( BUILDDIR ).files('*.json'):
             log.info('SCENARIO: %s', scenario_name)
             
             scenario_line = None
-            for line, value in scenario_indeces:
+            for line, value in indeces['scenarios']:
                 if scenario_name in value:
                     scenario_line = line
             
@@ -166,14 +162,14 @@ for testfile in path( BUILDDIR ).files('*.json'):
                 log.info('%s', usage)
                 
                 usage_line = None
-                for line, value in usage_indeces:
+                for line, value in indeces['usages']:
                     if line < scenario_line:  # Skip earlier lines
                         continue
                     if usage in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
                         usage_line = line
                 
                 try:
-                    next_usage_line = min([line for line, value in usage_indeces if line > usage_line])
+                    next_usage_line = min([line for line, value in indeces['usages'] if line > usage_line])
                 except ValueError:
                     next_usage_line = 0
                 
@@ -182,7 +178,7 @@ for testfile in path( BUILDDIR ).files('*.json'):
                     argv, expected = test['input'], test['expected']
                     
                     test_line = None
-                    for line, value in [(line, value) for (line, value) in test_indeces 
+                    for line, value in [(line, value) for (line, value) in indeces['tests']
                                         if (next_usage_line > line > usage_line) ]:
                         if argv in value:
                             test_line = line
