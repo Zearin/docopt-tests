@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
 # Standard Lib
-from    __future__  import (print_function, with_statement)
+from    __future__  import (print_function, with_statement, unicode_literals)
 import  atexit
 import  collections
 import  io
 import  json
+import  logging
 import  os
 import  re
 import  subprocess
 
-
 # Helpers
-from lib    import decode
-from path   import path
-import envoy
+import  lib, lib.json
+from    path   import path
+import  envoy
 
 # Testing
 from preggy import expect
@@ -24,34 +24,16 @@ from docopt import (docopt, DocoptExit, DocoptLanguageError)
 
 #--------------------------------------------------------------------------------
 
-FAILURES = dict()
+FAILURES = []
 
 SRCDIR   = 'src'
 BUILDDIR = 'build'
 INDENT   = '  '
 
-RE_FLAGS = re.IGNORECASE | re.UNICODE | re.VERBOSE  # | re.DOTALL 
-JSON_KEY = re.compile(r'''
-    ^(\s+)               # indent
-    "                    # dquote
-    (   [^"]             # not dquote
-        |(?<=\\)"        # OR, a backslash-escaped dquote
-    )+                   # 
-    "                    # dquote
-    :\                   # colon, space
-    [{"\[]              # an opening brace, dquote, or bracket
-    ''', flags=RE_FLAGS)
+log = logging.getLogger('docopt_tests')
+log.setLevel(logging.WARN)
 
-
-
-
-
-def _lookup_srcmap(file, line):
-    args = '../node_modules/.bin/source-map-peek {1}:{2}'.format(BUILDDIR, file, line),
-    kw   = dict(cwd=BUILDDIR)
-    
-    result = envoy.run(*args, **kw)
-    return result
+#--------------------------------------------------------------------------------
     
 def _handle_failed_test( kw ):
     file, scenario, usage = kw['file'], kw['scenario_data'][1], kw['usage_data'][1]
@@ -68,14 +50,11 @@ def _handle_failed_test( kw ):
     FAILURES[file][scenario][usage].append(kw)
     
     
-    lookup_result = _lookup_srcmap(path(file).basename(), kw['usage_data'][0])
+    lookup_result = lib.lookup_srcmap(path(file).basename(), kw['usage_data'][0], BUILDDIR)
     lookup_output = lookup_result.std_out.splitlines()
     print(lookup_output[-2:])
     
     print('Failed test #{test_index} for usage:{usage_data[1]}'.format( **kw ) )
-    
-    
-    
 
 def _show_failed_usages():
     from pprint import pprint
@@ -110,34 +89,30 @@ def _show_failed_usages():
     
 #atexit.register(_show_failed_usages)
 
-#-------------------------------------------------------------------------------
-
-class DocOptJSONDecoder(json.JSONDecoder):
-    '''Slightly-tweaked subclass of the normal JSONDecoder.
+def _scrape_srcmap_stdout(srcmap_out):
+    '''Scrapes the the output of :func:`lookup_srcmap`, and returns a tuple ``(file, line)``.
     '''
     
-    def __init__(self, *args, **kw):
-        # Standardize `object_hook`, `encoding`, and `strict` args
-        kw.update({
-            'object_hook': decode.decode_dict,
-            'object_pairs_hook': collections.OrderedDict,
-            'encoding': 'UTF-8',
-            'strict': False
-        })
-        
-        super(DocOptJSONDecoder, self).__init__(*args, **kw)
+    FLAGS     = re.IGNORECASE|re.MULTILINE|re.IGNORECASE|re.UNICODE#|re.DEBUG
+    SRCMAP_RE = re.compile(
+        r'''^file:\s(.+)\nline:\s(\d+)\s''',
+        flags=FLAGS)
+    
+    # relevant data is in the last 2 lines of output
+    srcmap_out = '\n'.join( srcmap_out.splitlines()[-2:] )
+    match      = SRCMAP_RE.match(srcmap_out)
+    result     = match.group(0), match.group(1)
+    return result
 
-def index_keys(lines):
-    matches = []
-    for idx, line in enumerate(lines, start=1):
-        is_match = JSON_KEY.match(line)
-        if is_match:
-            matches.append( (idx, is_match.string) )
-    return matches
+#-------------------------------------------------------------------------------
 
 
 # JSON File
 for testfile in path( BUILDDIR ).files('*.json'):
+    
+    log.debug('='*80)
+    log.debug('%s', testfile.relpath())
+    log.debug('='*80)
     
     # First, index the important keys
     #
@@ -146,46 +121,73 @@ for testfile in path( BUILDDIR ).files('*.json'):
     #
     lines     = testfile.lines(encoding='UTF-8')
     
-    key_indeces      = index_keys(lines)
+    key_indeces      = lib.json.index_keys(lines)
     feature_indeces  = [i for i in key_indeces if i[1].startswith(1*INDENT + '"') ]
     scenario_indeces = [i for i in key_indeces if i[1].startswith(2*INDENT + '"')
                                               and '__desc' not in i[1]            ]
     usage_indeces    = [i for i in key_indeces if i[1].startswith(3*INDENT + '"') ]
+    test_indeces     = [i for i in key_indeces if i[1].startswith(5*INDENT + '"input":') ]
+    
+    log.debug('\t%d Features',  len(feature_indeces))
+    log.debug('\t%d Scenarios', len(scenario_indeces))
+    log.debug('\t%d Usages',    len(usage_indeces))
     
     # Deserialize JSON
     contents  = testfile.text(encoding='UTF-8')
-    json_data = json.loads(contents, cls=DocOptJSONDecoder)
+    json_data = json.loads(
+        contents, 
+        object_hook=lib.json.decode.decode_dict, 
+        encoding   ='UTF-8', 
+        strict     =False
+        )
     
     
     # FEATURES
     for feature_name, feature in json_data.items():
-        error_in_feature = False
+        #error_in_feature = False
+        log.info('FEATURE: %s', feature_name)
         
         # SCENARIOS
         for scenario_name, scenario in feature.items():
             if scenario_name == '__desc':  # skip descriptions
                 continue
-            error_in_scenario = False
-            scenario_line = None
             
+            #error_in_scenario = False
+            log.info('SCENARIO: %s', scenario_name)
+            
+            scenario_line = None
             for line, value in scenario_indeces:
                 if scenario_name in value:
                     scenario_line = line
             
-            
             # USAGE
-            for usage, tests in scenario.items():
-                error_in_usage = False
+            for usage_index, (usage, tests) in enumerate(scenario.items()):
+                #error_in_usage = False
+                log.info('%s', usage)
                 
                 usage_line = None
                 for line, value in usage_indeces:
-                    if usage in value.replace(r'\n', '\n'):
+                    if line < scenario_line:  # Skip earlier lines
+                        continue
+                    if usage in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
                         usage_line = line
                 
+                try:
+                    next_usage_line = min([line for line, value in usage_indeces if line > usage_line])
+                except ValueError:
+                    next_usage_line = 0
                 
                 # TESTS
                 for test_index, test in enumerate(tests):
                     argv, expected = test['input'], test['expected']
+                    
+                    test_line = None
+                    for line, value in [(line, value) for (line, value) in test_indeces 
+                                        if (next_usage_line > line > usage_line) ]:
+                        if argv in value:
+                            test_line = line
+                    
+                    log.info('ARGV: %s', argv)
                     
                     try:
                         if expected == 'user-error':
@@ -208,10 +210,26 @@ for testfile in path( BUILDDIR ).files('*.json'):
                             'scenario_data': (scenario_line, scenario_name),
                             'usage_data':    (usage_line, usage),
                             'test_index':   test_index,
+                            'test_line':    test_line,
                             'test':         test,
                             'error':        err
                         }
+                        
+                        result = lib.lookup_srcmap(
+                            fail_data['file'], 
+                            test_line,
+                            cwd=BUILDDIR)
 
-                        _handle_failed_test(fail_data)
+                        src_file, src_line = _scrape_srcmap_stdout(result.std_out)
+                        FAILURES.append(fail_data)
                         
-                        
+                        #_handle_failed_test(fail_data)
+    
+    log.debug('%s: DONE\n', testfile.relpath())
+
+
+# Report the test results
+if len(FAILURES) == 0:
+    log.info('No tests were failed!')
+else:
+    log.warn('{0} failed tests'.format(len(FAILURES)))
