@@ -102,7 +102,7 @@ import contextlib
 @contextlib.contextmanager
 def scenario_context(ctx):
     #error_in_scenario = False
-    log.info('SCENARIO: %s', scenario_name)
+    log.info('SCENARIO: %s', ctx['scenario_name'])
     
     ctx['scenario_line'] = None
     for line, value in indeces['scenarios']:
@@ -119,13 +119,13 @@ def scenario_context(ctx):
 @contextlib.contextmanager
 def usage_context(ctx):
     #error_in_usage = False
-    log.info('%s', usage)
+    log.info('%s', ctx['usage'])
     
     ctx['usage_line'] = None
     for line, value in indeces['usages']:
         if line < ctx['scenario_line']:  # Skip earlier lines
             continue
-        if usage in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
+        if ctx['usage'] in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
             ctx['usage_line'] = line
     
     try:
@@ -142,16 +142,19 @@ def usage_context(ctx):
 def test_context(ctx):
     # TESTS
     ctx['test_line'] = None
-    for line, value in [(line, value) for (line, value) in indeces['tests']
-                        if (ctx['next_usage_line'] > line > ctx['usage_line']) ]:
-        if test['input'] in value:
+    
+    for line, value in [
+        (line, value) for (line, value) in indeces['tests'] 
+        if ctx['next_usage_line'] > line > ctx['usage_line'] 
+    ]:
+        if ctx['test']['input'] in value:
             ctx['test_line'] = line
     
-    log.info('ARGV: %s', test['input'])
+    log.info('ARGV: %s', ctx['test']['input'])
     
     # run the test
     try:
-        argv, expected = test['input'], test['expected']
+        argv, expected = ctx['test']['input'], ctx['test']['expected']
         if expected == 'user-error':
             try:
                 expect( docopt(ctx['usage'], argv, help=False) ).to_be_an_error()
