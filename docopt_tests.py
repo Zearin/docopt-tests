@@ -3,24 +3,19 @@
 # Standard Lib
 from    __future__  import (print_function, with_statement, unicode_literals)
 import  atexit
-import  collections
-import  io
 import  json
 import  logging
-import  os
 import  re
-import  subprocess
 
 # Helpers
 import  lib, lib.json
-from    path   import path
-import  envoy
+from path   import path
 
 # Testing
 from preggy import expect
 
 # Test subjects
-from docopt import (docopt, DocoptExit, DocoptLanguageError)
+from docopt import (docopt, DocoptExit)
 
 #--------------------------------------------------------------------------------
 
