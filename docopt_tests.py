@@ -19,7 +19,7 @@ from docopt import (docopt, DocoptExit)
 
 #--------------------------------------------------------------------------------
 
-FAILURES = []
+FAILURES    = {}
 
 SRCDIR      = 'src'
 BUILDDIR    = 'build'
@@ -97,98 +97,96 @@ def _scrape_srcmap_stdout(srcmap_out):
     # relevant data is in the last 2 lines of output
     srcmap_out = '\n'.join( srcmap_out.splitlines()[-2:] )
     match      = SRCMAP_RE.match(srcmap_out)
-    result     = match.group(0), match.group(1)
+    result     = [match.group(1), int(match.group(2))]
     return result
 
 #-------------------------------------------------------------------------------
 
-def process_json(json_obj, indeces):
-    # FEATURES
-    for feature_name, feature in json_data.items():
-        #error_in_feature = False
-        log.info('FEATURE: %s', feature_name)
-        
-        # SCENARIOS
-        for scenario_name, scenario in feature.items():
-            if scenario_name == '__desc':  # skip descriptions
-                continue
-            
-            #error_in_scenario = False
-            log.info('SCENARIO: %s', scenario_name)
-            
-            scenario_line = None
-            for line, value in indeces['scenarios']:
-                if scenario_name in value:
-                    scenario_line = line
-            
-            # USAGE
-            for usage_index, (usage, tests) in enumerate(scenario.items()):
-                #error_in_usage = False
-                log.info('%s', usage)
-                
-                usage_line = None
-                for line, value in indeces['usages']:
-                    if line < scenario_line:  # Skip earlier lines
-                        continue
-                    if usage in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
-                        usage_line = line
-                
-                try:
-                    next_usage_line = min([line for line, value in indeces['usages'] if line > usage_line])
-                except ValueError:
-                    next_usage_line = 0
-                
-                # TESTS
-                for test_index, test in enumerate(tests):
-                    argv, expected = test['input'], test['expected']
-                    
-                    test_line = None
-                    for line, value in [(line, value) for (line, value) in indeces['tests']
-                                        if (next_usage_line > line > usage_line) ]:
-                        if argv in value:
-                            test_line = line
-                    
-                    log.info('ARGV: %s', argv)
-                    
-                    try:
-                        if expected == 'user-error':
-                            try:
-                                expect( docopt(usage, argv, help=False) ).to_be_an_error()
-                            except (DocoptExit,SystemExit): # prevent docopt from stopping testing
-                                pass
-                        else:
-                            try:
-                                expect( docopt(usage, argv, help=False) ).to_equal(expected)
-                            except (DocoptExit,SystemExit): # prevent docopt from stopping testing
-                                pass
-                    
-                    # test failed
-                    except AssertionError as err:
-                        fail_data = {
-                            'file_obj':     testfile,
-                            'file':         testfile.basename(),
-                            
-                            'scenario_data': (scenario_line, scenario_name),
-                            'usage_data':    (usage_line, usage),
-                            'test_index':   test_index,
-                            'test_line':    test_line,
-                            'test':         test,
-                            'error':        err
-                        }
-                        
-                        result = lib.lookup_srcmap(
-                            fail_data['file'], 
-                            test_line,
-                            cwd=BUILDDIR)
+import contextlib
 
-                        src_file, src_line = _scrape_srcmap_stdout(result.std_out)
-                        FAILURES.append(fail_data)
-                        
-                        #_handle_failed_test(fail_data)
+@contextlib.contextmanager
+def scenario_context(ctx):
+    #error_in_scenario = False
+    log.info('SCENARIO: %s', scenario_name)
     
-    log.debug('%s: DONE\n', testfile.relpath())
+    ctx['scenario_line'] = None
+    for line, value in indeces['scenarios']:
+        if ctx['scenario_name'] in value:
+            ctx['scenario_line'] = line
+    
+    yield ctx
+    
+    for i in ('scenario_name','scenario','scenario_line'):
+        del ctx[i]
+        
 
-#-------------------------------------------------------------------------------
+
+@contextlib.contextmanager
+def usage_context(ctx):
+    #error_in_usage = False
+    log.info('%s', usage)
+    
+    ctx['usage_line'] = None
+    for line, value in indeces['usages']:
+        if line < ctx['scenario_line']:  # Skip earlier lines
+            continue
+        if usage in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
+            ctx['usage_line'] = line
+    
+    try:
+        ctx['next_usage_line'] = min([line for line, value in indeces['usages'] if line > ctx['usage_line']])
+    except ValueError:
+        ctx['next_usage_line'] = 0
+    
+    yield ctx
+    
+    for i in ('usage_index','usage','tests','usage_line','next_usage_line'):
+        del ctx[i]
+
+@contextlib.contextmanager
+def test_context(ctx):
+    # TESTS
+    ctx['test_line'] = None
+    for line, value in [(line, value) for (line, value) in indeces['tests']
+                        if (ctx['next_usage_line'] > line > ctx['usage_line']) ]:
+        if test['input'] in value:
+            ctx['test_line'] = line
+    
+    log.info('ARGV: %s', test['input'])
+    
+    # run the test
+    try:
+        argv, expected = test['input'], test['expected']
+        if expected == 'user-error':
+            try:
+                expect( docopt(ctx['usage'], argv, help=False) ).to_be_an_error()
+            except (DocoptExit,SystemExit): # prevent docopt from stopping testing
+                pass
+        else:
+            try:
+                expect( docopt(ctx['usage'], argv, help=False) ).to_equal(expected)
+            except (DocoptExit,SystemExit): # prevent docopt from stopping testing
+                pass
+    
+    # test failed
+    except AssertionError as err:
+        _error_source = lib.src_map_peek(
+            ctx['file_obj'].basename(), 
+            ctx['test_line'],
+            cwd=BUILDDIR)
+        _error_ctx = _scrape_srcmap_stdout(_error_source.std_out)
+        if _error_ctx[0].startswith('../src'):
+            _error_ctx[0] = _error_ctx[0][3:]
+        ctx['error'] = _error_ctx
+        
+    finally:
+        yield ctx
+        #_handle_failed_test(fail_data)
+        for i in ('test_index','test','test_line','error'):
+            try:                del ctx[i]
+            except KeyError:    pass
+
+
 # JSON File
 for testfile in TESTFILES:
     
@@ -217,12 +215,71 @@ for testfile in TESTFILES:
         strict     =False
         )
     
-    process_json(json_data, indeces)
+    ctx = {
+        'file_obj': testfile,
+        'indeces':  indeces
+    }
     
+    
+    # FEATURES
+    for feature_name, feature in json_data.items():
+        #error_in_feature = False
+        log.info('FEATURE: %s', feature_name)
+        
+        ctx.update({
+            'feature_name': feature_name,
+            'feature':      feature
+        })
+        
+        
+        # SCENARIOS
+        for scenario_name, scenario in ctx['feature'].items():
+            if scenario_name == '__desc':  # skip descriptions
+                continue
+            
+            ctx.update({
+                'scenario_name': scenario_name,
+                'scenario':      scenario 
+            })
+            
+            
+            with scenario_context(ctx) as ctx:
+                
+                
+                # USAGE
+                for usage_index, (usage, tests) in enumerate(ctx['scenario'].items()):
+                    ctx.update({
+                        'usage_index': usage_index,
+                        'usage':       usage,
+                        'tests':       tests
+                    })
+                    
+                    
+                    with usage_context(ctx) as ctx:
+                        for test_index, test in enumerate(ctx['tests']):
+                            ctx.update({
+                                'test_index': test_index,
+                                'test':       test
+                            })
+                            
+                            with test_context(ctx) as ctx:
+                                if 'error' in ctx:
+                                    src_file, src_line = ctx['error']
+                                    
+                                    if src_file not in FAILURES:
+                                        FAILURES[src_file] = []
+                                    FAILURES[src_file].append(src_line)
+                            
+        
+    
+for src_file, line_numbers in FAILURES.iteritems():
+    print(src_file)
+    for i in sorted(line_numbers):
+        print('\t{0}'.format(i))
 
 
-# Report the test results
-if len(FAILURES) == 0:
-    log.info('No tests were failed!')
-else:
-    log.warn('{0} failed tests'.format(len(FAILURES)))
+# # Report the test results
+# if len(FAILURES) == 0:
+#     log.info('No tests were failed!')
+# else:
+#     log.warn('{0} failed tests'.format(len(FAILURES)))
