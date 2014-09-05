@@ -2,7 +2,7 @@
 
 import envoy
 
-def lookup_srcmap(file, line, cwd):
+def src_map_peek(file, line, cwd):
     '''Given ``file`` and ``line``, runs the command ``source-map-peek`` to lookup the 
     equivalent location in the *.cson file.
     '''
