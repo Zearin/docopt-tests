@@ -46,7 +46,7 @@ def _handle_failed_test( kw ):
     FAILURES[file][scenario][usage].append(kw)
     
     
-    lookup_result = lib.lookup_srcmap(path(file).basename(), kw['usage_data'][0], BUILDDIR)
+    lookup_result = lib.src_map_peek(path(file).basename(), kw['usage_data'][0], BUILDDIR)
     lookup_output = lookup_result.std_out.splitlines()
     print(lookup_output[-2:])
     
@@ -63,12 +63,12 @@ def _show_failed_usages():
     
     FAILCOUNT=0
     
-    for scenario in FAILED_USAGES.keys():
+    for scenario in FAILURES.keys():
         print('{Style.DIM}{banner}{Style.RESET_ALL}'.format(Style=Style, banner=('-' * 80)))
         print(scenario)
         print()
         
-        for doc, failures in FAILED_USAGES[scenario].items():
+        for doc, failures in FAILURES[scenario].items():
             print("  {Fore.WHITE}{Style.DIM}{banner}{Style.RESET_ALL}{Fore.RESET}".format(Fore=Fore, Style=Style, banner=('-' * 80) ))
             print("  {Fore.WHITE}{doc}{Fore.RESET}".format(Fore=Fore, doc=doc))
             for fail in failures:
