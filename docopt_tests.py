@@ -56,11 +56,6 @@ def _show_failed_usages():
     from pprint import pprint
     from colorama import (Fore, Back, Style)
     
-    for idx, i in enumerate(args):
-        indent = ' ' * idx
-        i = str(i)
-        print(indent + i)
-    
     FAILCOUNT=0
     
     for scenario in FAILURES.keys():
