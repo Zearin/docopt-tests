@@ -105,7 +105,7 @@ def scenario_context(ctx):
     log.info('SCENARIO: %s', ctx['scenario_name'])
     
     ctx['scenario_line'] = None
-    for line, value in indeces['scenarios']:
+    for line, value in ctx['indeces']['scenarios']:
         if ctx['scenario_name'] in value:
             ctx['scenario_line'] = line
     
@@ -122,14 +122,14 @@ def usage_context(ctx):
     log.info('%s', ctx['usage'])
     
     ctx['usage_line'] = None
-    for line, value in indeces['usages']:
+    for line, value in ctx['indeces']['usages']:
         if line < ctx['scenario_line']:  # Skip earlier lines
             continue
         if ctx['usage'] in value.replace(r'\n', '\n'):  #  Usages often span multiple lines
             ctx['usage_line'] = line
     
     try:
-        ctx['next_usage_line'] = min([line for line, value in indeces['usages'] if line > ctx['usage_line']])
+        ctx['next_usage_line'] = min([line for line, value in ctx['indeces']['usages'] if line > ctx['usage_line']])
     except ValueError:
         ctx['next_usage_line'] = 0
     
@@ -144,7 +144,7 @@ def test_context(ctx):
     ctx['test_line'] = None
     
     for line, value in [
-        (line, value) for (line, value) in indeces['tests'] 
+        (line, value) for (line, value) in ctx['indeces']['tests'] 
         if ctx['next_usage_line'] > line > ctx['usage_line'] 
     ]:
         if ctx['test']['input'] in value:
