@@ -171,7 +171,7 @@ def test_context(ctx):
     # test failed
     except AssertionError as err:
         _error_source = lib.src_map_peek(
-            ctx['file_obj'].basename(), 
+            ctx['testfile'].basename(), 
             ctx['test_line'],
             cwd=BUILDDIR)
         _error_ctx = _scrape_srcmap_stdout(_error_source.std_out)
@@ -216,7 +216,7 @@ for testfile in TESTFILES:
         )
     
     ctx = {
-        'file_obj': testfile,
+        'testfile': testfile,
         'indeces':  indeces
     }
     
