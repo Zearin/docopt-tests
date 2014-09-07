@@ -8,6 +8,7 @@ Adapted from:
 '''
 
 from collections import OrderedDict
+import json
 
 def decode_list(data):
     rv = []
@@ -40,3 +41,20 @@ def decode_dict(data, ordered_dict=False):
 
 def decode_ordered_dict(data):
     return decode_dict(data, ordered_dict=True)
+
+
+class DocOptJSONDecoder(json.JSONDecoder):
+    '''Slightly-tweaked subclass of the normal JSONDecoder.
+    '''
+    
+    def __init__(self, *args, **kw):
+        
+        # Standardize `object_hook`, `encoding`, and `strict` args
+        kw.update({
+            'object_hook':       kw.get('object_hook',       decode_dict),
+            'object_pairs_hook': kw.get('object_pairs_hook', OrderedDict),
+            'encoding':          kw.get('encoding',          'UTF-8'),
+            'strict':            kw.get('strict',            False)
+        })
+        
+        super(DocOptJSONDecoder, self).__init__(*args, **kw)
